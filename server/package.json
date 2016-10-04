@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@gar/hapi-json-api": "^2.0.2",
+    "bcrypt": "^0.8.7",
     "boom": "^4.1.0",
     "colors": "^1.1.2",
     "hapi": "^15.1.1",
