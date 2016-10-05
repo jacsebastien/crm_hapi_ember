@@ -5,6 +5,7 @@ let logger = require(`${process.cwd()}/utils/logger`);
 
 let clientsCtrls = require('./controllers/clientsControllers');
 let companiesCtrls = require('./controllers/companiesControllers');
+let paramsCtrls = require('./controllers/paramsControllers');
 
 module.exports = [
     // CLIENTS

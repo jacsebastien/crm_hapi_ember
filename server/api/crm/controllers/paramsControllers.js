@@ -3,28 +3,18 @@
 let logger = require(`${process.cwd()}/utils/logger`);
 let utils = require(`${process.cwd()}/utils/utils`)
 let model = require('../model');
+model = model.Param;
 
 let Boom = require('boom');
 
-let type = 'company';
+let type = 'param';
 
-logger.log("Companies Controllers");
+logger.log("Params Controllers");
 
 exports.get = function(req, res) {
     logger.log("-- GET Ctrl");
 
-    let query = {};
-    if(req.query.search){
-        let regex = { "$regex": req.query.search, "$options": "i" };
-        query = { $or: [
-            {'name': regex},
-            {'vat.num': regex},
-            {'contact.street': regex},
-            {'contact.country': regex}
-        ]};
-    }
-
-    model.find(query).populate('clients')
+    model.find()
     .then(function(docs){
         let documents = [];
         docs.map(function(documentFromDb){

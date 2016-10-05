@@ -1,0 +1,16 @@
+<section class="view-content">
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Inscrit le</th>
+            <th>Actions</th>
+        </tr>
+        {{#each model as |client|}}
+        <tr>
+            <td>{{client.name}}</td>
+            <td>{{moment-format client.createdat 'DD/MM/YYYY'}}</td>
+            <td><button>Détails</button><button>Editer</button></td>
+        </tr>
+        {{/each}}
+    </table>
+</section>

@@ -2,8 +2,8 @@
 
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
-let logger = require(`${process.cwd()}/server/utils/logger`);
-let validate = require('mongoose-validator');
+let logger = require(`${process.cwd()}/utils/logger`);
+// let validate = require('mongoose-validator');
 
 // place for validators
 
@@ -66,11 +66,11 @@ let companyModel = function() {
                 type : String,
                 required : true
             },
-            phoneMain : {
+            phonemain : {
                 type : String,
                 required : true
             },
-            phoneSec : String,
+            phonesec : String,
             fax : String,
             web : String
         }, 
@@ -92,11 +92,11 @@ let companyModel = function() {
                 type : String,
                 required : true
             },
-            phoneMain : {
+            phonemain : {
                 type : String,
                 required : true
             },
-            phoneSec : String
+            phonesec : String
         },
         paymentinfo : {
             bank : [{
@@ -117,6 +117,8 @@ let companyModel = function() {
             rule : String
         },
         bills: [{
+            // the link of the pdf when printed => if undefined we can edit the bill
+            link: String,
             number: String,
             date: Date,
             client: {
@@ -150,7 +152,17 @@ let companyModel = function() {
             primaccount: Schema.Types.Mixed,
             secaccount: Schema.Types.Mixed,
 
-            note: String
+            note: String,
+            payedat : Date,
+            createdat : Date,
+            updatedat: {
+                type: Date,
+                default: Date.now
+            },
+        }],
+        credits: [{
+            bill_id: String,
+            amount: Number
         }],
         // Terms of Sales
         terms : String,
@@ -171,217 +183,120 @@ let companyModel = function() {
         }
     });
 
-    let Client = mongoose.Schema({
-            name : {
+    let Client = Schema({
+        name : {
+            type : String,
+            required : true
+        },
+        iscompany : {
+            type : Boolean,
+            required : true
+        },
+        vat : {
+            num : String,
+            siren : String,
+            rcs : String
+        },
+        billinginfo : {
+            civility : String,
+            firstname : String,
+            lastname : String,
+            street : {
                 type : String,
-                required : true,
-                lowercase : true
-            },
-            isCompany : {
-                type : Boolean,
                 required : true
             },
-            vat : {
-                num : {
-                    type : String
-                },
-                siren : {
-                    type : String
-                },
-                rcs : {
-                    type : String
-                }
+            number : {
+                type : Number,
+                required : true
             },
-            billingInfo : {
-                civility : {
-                    type : String
-                },
-                firstname : {
-                    type : String,
-                    lowercase : true
-                },
-                lastname : {
-                    type : String,
-                    lowercase : true
-                },
-                street : {
-                    type : String,
-                    required : true,
-                    lowercase: true
-                },
-                number : {
-                    type : Number,
-                    required : true,
-                    validate : numberValidator
-                },
-                box : {
-                    type : String
-                },
-                zip : {
-                    type : String,
-                    required : true
-                },
-                town : {
-                    type : String,
-                    required : true,
-                    lowercase: true
-                },
-                country : {
-                    type : String,
-                    required : true,
-                    lowercase: true
-                },
-                mail : {
-                    type : String,
-                    required : true,
-                    lowercase : true
-                },
-                phoneMain : {
-                    type : String,
-                    required : true
-                },
-                phoneSec : {
-                    type : String
-                },
-                fax : {
-                    type : String
-                }
+            box : String,
+            zip : {
+                type : String,
+                required : true
             },
-            deliveryInfo : {
-                civility : {
-                    type : String
-                },
-                firstname : {
-                    type : String,
-                    lowercase : true
-                },
-                lastname : {
-                    type : String,
-                    lowercase : true
-                },
-                company : {
-                    type : String,
-                    lowercase : true
-                },
-                street : {
-                    type : String,
-                    required : true,
-                    lowercase: true
-                },
-                number : {
-                    type : Number,
-                    required : true,
-                    validate : numberValidator
-                },
-                box : {
-                    type : String
-                },
-                zip : {
-                    type : String,
-                    required : true
-                },
-                town : {
-                    type : String,
-                    required : true,
-                    lowercase: true
-                },
-                country : {
-                    type : String,
-                    required : true,
-                    lowercase: true
-                }
-            }, 
-            contactPerson : {
-                civility : {
-                    type : String,
-                    required : true
-                },
-                firstname : {
-                    type : String,
-                    required : true,
-                    lowercase : true
-                },
-                lastname : {
-                    type : String,
-                    required : true,
-                    lowercase : true
-                },
-                post : {
-                    type : String,
-                    lowercase : true
-                },
-                mail : {
-                    type : String,
-                    required : true,
-                    lowercase : true
-                },
-                phoneMain : {
-                    type : String,
-                    required : true
-                },
-                phoneSec : {
-                    type : String
-                },
-                pwd : {
-                    type : String,
-                    required : true
-                }
+            town : {
+                type : String,
+                required : true
             },
-            picture : {
-                type : String
+            country : {
+                type : String,
+                required : true
             },
-            bills : [{
-                link : {
-                    type : String
-                },
-                state : {
-                    type : Boolean
-                },
-                quotation_id : {
-                    type : String,
-                    validate : numberValidator
-                },
-                createdAt : {
-                    type : Date,
-                    validate : dateValidator
-                },
-                deadLine : {
-                    type : Date,
-                    validate : dateValidator
-                },
-                payedAt : {
-                    type : Date,
-                    validate : dateValidator
-                }
-            }],
-            quotations : [{
-                link : {
-                    type : String
-                },
-                state : {
-                    type : Boolean
-                },
-                createdAt : {
-                    type : Date,
-                    validate : dateValidator
-                }
-            }],
-            memo : {
-                type : String
+            mail : {
+                type : String,
+                required : true
             },
-            createdAt : {
-                type : Date,
-                required : true,
-                validate : dateValidator
+            phonemain : {
+                type : String,
+                required : true
             },
-            updatedAt : {
-                type : Date,
-                default : Date.now,
-                validate : dateValidator
+            phonesec : String,
+            fax : String
+        },
+        deliveryinfo : {
+            civility : String,
+            firstname : String,
+            lastname : String,
+            company : String,
+            street : {
+                type : String,
+                required : true
+            },
+            number : {
+                type : Number,
+                required : true
+            },
+            box : String,
+            zip : {
+                type : String,
+                required : true
+            },
+            town : {
+                type : String,
+                required : true
+            },
+            country : {
+                type : String,
+                required : true
             }
+        }, 
+        contactperson : {
+            civility : {
+                type : String,
+                required : true
+            },
+            firstname : {
+                type : String,
+                required : true
+            },
+            lastname : {
+                type : String,
+                required : true
+            },
+            post : String,
+            mail : {
+                type : String,
+                required : true
+            },
+            phoneMain : {
+                type : String,
+                required : true
+            },
+            phoneSec : String,
+        },
+        picture : String,
+        memo : String,
+        createdat : {
+            type : Date,
+            required : true
+        },
+        updatedat : {
+            type : Date,
+            default : Date.now
+        }
     });
 
-    let Param = mongoose.Schema({
+    let Param = Schema({
         rules : [{
             // Payable au grand comptant
             type : String,
@@ -396,17 +311,24 @@ let companyModel = function() {
             type : String,
             required : true
         }],
-        vatRate : [{
+        vatrate : [{
             // 0, 6, 21
             type : Number,
             required : true
         }],
-        vatPrefix : [{
+        vatprefix : [{
             // BE, FR, ...
             type : String,
-            required : true,
-            uppercase : true
+            required : true
         }]
     });
+
+    var Base = mongoose.model('company', Company, 'companies');
+    var exports = module.exports = Base;
+    Base.Client = mongoose.model('client', Client, 'clients');
+    Base.Param = mongoose.model('param', Param, 'params')
+    logger.log(Base);
+
+    return Base;
 };
 module.exports = new companyModel();
