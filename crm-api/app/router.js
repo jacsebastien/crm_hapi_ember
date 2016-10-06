@@ -13,6 +13,7 @@ Router.map(function() {
   this.route('bills', function() {
     this.route('new');
   });
+  this.route('account');
 });
 
 export default Router;

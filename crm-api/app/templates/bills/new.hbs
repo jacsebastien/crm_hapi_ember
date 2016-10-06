@@ -1,16 +1,16 @@
 <section class="view-content">
     <h2>Nouvelle Facture</h2>
-    <form>
+    <form {{action 'saveBill' newBill on="submit"}}>
         <fieldset class="references">
             <legend>Vos références</legend>
             <ul>
                 <li>
                     <label for="number">N° de facture</label><br>
-                    {{input type="text" id="number" value=model.number}}
+                    {{input type="text" id="number" value=newBill.number}}
                 </li>
                 <li>
                     <label for="date">Date de facture</label><br>
-                    {{input type="date" id="date" value=model.date}}
+                    {{input type="date" id="date" value=newBill.date}}
                 </li>
             </ul>
         </fieldset>
@@ -20,12 +20,11 @@
             <ul>
                 <li>
                     <label for="client">Client</label><br>
-                    {{input type="text" id="client" value=model.client}}
-                    {{!--{{#x-select id="client" value=model.client}}
+                    {{#x-select id="client" value=newBill.client}}
                         {{#each clients as |client|}}
                             {{#x-option value=client.id}}{{client.name}}{{/x-option}}
                         {{/each}}
-                    {{/x-select}}--}}
+                    {{/x-select}}
                 </li>
             </ul>
         </fieldset>
@@ -35,15 +34,15 @@
             <ul>
                 <li>
                     <label for="project-name">Nom du projet</label><br>
-                    {{input type="text" id="project-name" value=model.project.name}}
+                    {{input type="text" id="project-name" value=newBill.project.name}}
                 </li>
                 <li>
                     <label for="project-begin">Date de début</label><br>
-                    {{input type="text" id="project-begin" value=model.project.begin}}
+                    {{input type="text" id="project-begin" value=newBill.project.begin}}
                 </li>
                 <li>
                     <label for="project-end">Date de fin</label><br>
-                    {{input type="text" id="project-end" value=model.project.end}}
+                    {{input type="text" id="project-end" value=newBill.project.end}}
                 </li>
             </ul>
         </fieldset>
@@ -54,70 +53,70 @@
                 <ul>
                     <li class="article-name">
                         <label for="article-name">Article</label><br>
-                        {{input type="text" id="article-name" value=model.details.articles.name}}
+                        {{input type="text" id="article-name" value=newBill.details.articles.name}}
                     </li>
                     
                     <li class="article-description">
                         <label for="article-description">Description</label><br>
-                        {{input type="text" id="article-description" value=model.details.articles.description}}
+                        {{input type="text" id="article-description" value=newBill.details.articles.description}}
                     </li>
 
                     <li class="article-type">
                         <label for="article-type">Type</label><br>
-                        {{input type="text" id="article-type" value=model.details.articles.type}}
+                        {{input type="text" id="article-type" value=newBill.details.articles.type}}
                     </li>
 
                     <li class="article-quantity">
                         <label for="article-quantity">Qté</label><br>
-                        {{input type="text" id="article-quantity" value=model.details.articles.quantity}}
+                        {{input type="text" id="article-quantity" value=newBill.details.articles.quantity}}
                     </li>
 
                     <li class="article-price">
                         <label for="article-price">P/U</label><br>
-                        {{input type="text" id="article-price" value=model.details.articles.price}}
+                        {{input type="text" id="article-price" value=newBill.details.articles.price}}
                     </li>
 
                     <li class="article-amount">
                         <label for="article-amount">Montant</label><br>
-                        {{input type="text" id="article-amount" value=model.details.articles.amount}}
+                        {{input type="text" id="article-amount" value=newBill.details.articles.amount}}
                     </li>
 
                     <li class="article-vat">
                         <label for="article-vat">TVA</label><br>
-                        {{input type="text" id="article-vat" value=model.details.articles.vat}}
+                        {{input type="text" id="article-vat" value=newBill.details.articles.vat}}
                     </li>
                 </ul>
             </div>
             <div class="tots">
                 <ul>
                     <li>
-                        <label for="article-totxvat">Total hors taxes</label>
-                        {{input type="text" id="article-totxvat" value=model.details.totxvat}}
+                        <label for="tots-totxvat">Total hors taxes</label>
+                        {{input type="text" id="tots-totxvat" value=newBill.details.totxvat}}
                     </li>
-                    <li class="article-refund">
-                        <label for="article-refund">Ristourne</label>
-                        {{input type="text" id="article-refund" value=model.details.refund}}
-                        {{input type="text" id="article-refundtype" value=model.details.refundtype}}
-                    </li>
-                    <li>
-                        <label for="article-utotxvat">Sous-Total hors taxes</label>
-                        {{input type="text" id="article-utotxvat" value=model.details.utotxvat}}
+                    <li class="tots-refund">
+                        <label for="tots-refund">Ristourne</label>
+                        {{input type="text" id="tots-refund" value=newBill.details.refund}}
+                        {{input type="text" id="tots-refundtype" value=newBill.details.refundtype}}
                     </li>
                     <li>
-                        <label for="article-vat">TVA</label>
-                        {{input type="text" id="article-vat" value=model.details.vat}}
-                    </li>
-                    <li class="article-utotal">
-                        <label for="article-utotal">Total TTC</label>
-                        {{input type="text" id="article-utotal" value=model.details.utotal}}
+                        <label for="tots-utotxvat">Sous-Total hors taxes</label>
+                        {{input type="text" id="tots-utotxvat" value=newBill.details.utotxvat}}
                     </li>
                     <li>
-                        <label for="article-advance">Accompte</label>
-                        {{input type="text" id="article-advance" value=model.details.advance}}
+                        <label for="tots-vat">TVA</label>
+                        {{input type="text" id="tots-vat" value=newBill.details.vat}}
                     </li>
-                    <li class="article-total">
-                        <label for="article-total">A payer</label>
-                        {{input type="text" id="article-total" value=model.details.total}}
+                    <li class="tots-utotal">
+                        <label for="tots-utotal">Total TTC</label>
+                        {{input type="text" id="tots-utotal" value=newBill.details.utotal}}
+                    </li>
+                    <li>
+                        <label for="tots-advance">Accompte</label>
+                        {{input type="text" id="tots-advance" value=newBill.details.advance}}
+                    </li>
+                    <li class="tots-total">
+                        <label for="tots-total">A payer</label>
+                        {{input type="text" id="tots-total" value=newBill.details.total}}
                     </li>
                 </ul>
             </div>
@@ -128,19 +127,19 @@
             <ul>
                 <li>
                     <label for="deadline">Echéance</label><br>
-                    {{input type="text" id="deadline" value=model.deadline}}
+                    {{input type="text" id="deadline" value=newBill.deadline}}
                 </li>
                 <li>
                     <label for="primaccount">Mode de paiement principal</label><br>
-                    {{input type="text" id="primaccount" value=model.primaccount}}
+                    {{input type="text" id="primaccount" value=newBill.primaccount}}
                 </li>
                 <li>
                     <label for="secaccount">Mode de paiement secondaire</label><br>
-                    {{input type="text" id="secaccount" value=model.secaccount}}
+                    {{input type="text" id="secaccount" value=newBill.secaccount}}
                 </li>
                 <li>
                     <label for="note">Notes</label><br>
-                    {{textarea id="note" value=model.note cols="100" rows="6"}}
+                    {{textarea id="note" value=newBill.note cols="100" rows="6"}}
                 </li>
             </ul>
         </fieldset>

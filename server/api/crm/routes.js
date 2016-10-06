@@ -5,6 +5,7 @@ let logger = require(`${process.cwd()}/utils/logger`);
 
 let clientsCtrls = require('./controllers/clientsControllers');
 let companiesCtrls = require('./controllers/companiesControllers');
+let billsCtrls = require('./controllers/billsControllers');
 let paramsCtrls = require('./controllers/paramsControllers');
 
 module.exports = [
@@ -51,6 +52,28 @@ module.exports = [
             method: 'DELETE',
             path: '/api/companies/{id}',
             handler: companiesCtrls.remove
+        },
+    // BILLS
+        {
+            method: 'GET',
+            path: '/api/bills',
+            handler: billsCtrls.get
+        },{
+            method: 'GET',
+            path: '/api/bills/{id}',
+            handler: billsCtrls.getOne
+        },{
+            method: 'POST',
+            path: '/api/bills',
+            handler: billsCtrls.post
+        },{
+            method: 'PATCH',
+            path: '/api/bills/{id}',
+            handler: billsCtrls.update
+        },{
+            method: 'DELETE',
+            path: '/api/bills/{id}',
+            handler: billsCtrls.remove
         },
     // PARAMETERS
         {   // get the marameters of the api for general data

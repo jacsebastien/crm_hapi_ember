@@ -23,7 +23,7 @@ exports.get = function(req, res) {
         ]};
     }
 
-    model.find(query).populate('clients')
+    model.find(query).populate('bills')
     .then(function(docs){
         let documents = [];
         docs.map(function(documentFromDb){

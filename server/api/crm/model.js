@@ -117,48 +117,8 @@ let companyModel = function() {
             rule : String
         },
         bills: [{
-            // the link of the pdf when printed => if undefined we can edit the bill
-            link: String,
-            number: String,
-            date: Date,
-            client: {
-                type: Schema.Types.ObjectId,
-                ref: 'client'
-            },
-            project: {
-                name: String,
-                begin: Date, // date
-                end: Date
-            },
-            details: {
-                articles: [{
-                    name : String,
-                    description: String,
-                    type: String,
-                    quantity: Number,
-                    price: Number,
-                    vat: Number,
-                }],
-                refund: Number,
-                // %, €, ...
-                refundtype: String,
-                // amount already payed by the client
-                advance: Number
-
-                // all tots are auto calculated
-            },
-            deadline: String,
-            // can have multiple data type in function of the account type
-            primaccount: Schema.Types.Mixed,
-            secaccount: Schema.Types.Mixed,
-
-            note: String,
-            payedat : Date,
-            createdat : Date,
-            updatedat: {
-                type: Date,
-                default: Date.now
-            },
+            type: Schema.Types.ObjectId,
+            ref: 'bill'
         }],
         credits: [{
             bill_id: String,
@@ -180,6 +140,51 @@ let companyModel = function() {
         updatedat : {
             type : Date,
             default : Date.now
+        }
+    });
+
+    let Bill = Schema({
+        // the link of the pdf when printed => if undefined we can edit the bill
+        link: String,
+        number: String,
+        date: Date,
+        client: {
+            type: Schema.Types.ObjectId,
+            ref: 'client'
+        },
+        project: {
+            name: String,
+            begin: Date, // date
+            end: Date
+        },
+        details: {
+            articles: [{
+                name : String,
+                description: String,
+                type: String,
+                quantity: Number,
+                price: Number,
+                vat: Number,
+            }],
+            refund: Number,
+            // %, €, ...
+            refundtype: String,
+            // amount already payed by the client
+            advance: Number
+
+            // all tots are auto calculated
+        },
+        deadline: String,
+        // can have multiple data type in function of the account type
+        primaccount: Schema.Types.Mixed,
+        secaccount: Schema.Types.Mixed,
+
+        note: String,
+        payedat : Date,
+        createdat : Date,
+        updatedat: {
+            type: Date,
+            default: Date.now
         }
     });
 
@@ -284,6 +289,10 @@ let companyModel = function() {
             },
             phoneSec : String,
         },
+        bills: [{
+            type: Schema.Types.ObjectId,
+            ref: 'bill'
+        }],
         picture : String,
         memo : String,
         createdat : {
@@ -326,6 +335,7 @@ let companyModel = function() {
     var Base = mongoose.model('company', Company, 'companies');
     var exports = module.exports = Base;
     Base.Client = mongoose.model('client', Client, 'clients');
+    Base.Bill = mongoose.model('bill', Bill, 'bills');
     Base.Param = mongoose.model('param', Param, 'params')
     logger.log(Base);
 

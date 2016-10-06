@@ -7,6 +7,7 @@ export default DS.Model.extend({
     billinginfo : DS.attr(),
     deliveryinfo : DS.attr(), 
     contactperson : DS.attr(),
+    bills : DS.attr(),
     picture : DS.attr(),
     memo : DS.attr(),
     createdat : DS.attr(),

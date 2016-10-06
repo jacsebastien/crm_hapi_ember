@@ -3,12 +3,13 @@
 let logger = require(`${process.cwd()}/utils/logger`);
 let utils = require(`${process.cwd()}/utils/utils`)
 let model = require('../model');
+model = model.Bill;
 
 let Boom = require('boom');
 
-let type = 'company';
+let type = 'bill';
 
-logger.log("Companies Controllers");
+logger.log("Bills Controllers");
 
 exports.get = function(req, res) {
     logger.log("-- GET Ctrl");
@@ -17,14 +18,11 @@ exports.get = function(req, res) {
     if(req.query.search){
         let regex = { "$regex": req.query.search, "$options": "i" };
         query = { $or: [
-            {'name': regex},
-            {'vat.num': regex},
-            {'contact.street': regex},
-            {'contact.country': regex}
+            {'number': regex}
         ]};
     }
 
-    model.find(query).populate('clients bills')
+    model.find(query).populate('client')
     .then(function(docs){
         let documents = [];
         docs.map(function(documentFromDb){

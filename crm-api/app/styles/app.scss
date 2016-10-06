@@ -172,21 +172,29 @@ form {
     & legend {
         text-transform: uppercase;
     }
-    input {
+    input, select {
         width: 100%;
         line-height: 18px;
         margin: 5px 0;
+        border: 1px solid $middleColor;
+        background-color: #FFF;
 
         &[type="submit"]{
             width: 200px;
             font-size: 16px;
             line-height: 30px;
 
-            background-color: $middleColor;
-            border: 0px solid $mainColor;
+            background-color: $mainColor;
+            border: 0px;
             color: $diffMain;
         }
     }
+
+    select {
+        height: 25px;
+        border-radius: 0px;
+    }
+
     label {
         display: inline-block;
         margin: 5px 0;
@@ -244,7 +252,7 @@ form {
             }
         }
 
-        & .article-refund {
+        & .tots-refund {
             display: flex;
             justify-content: space-between;
             & input {
@@ -252,11 +260,11 @@ form {
             }
         }
 
-        & .article-utotal {
+        & .tots-utotal {
             border-top: 1px solid $mainColor;
         }
 
-        & .article-total {
+        & .tots-total {
             text-transform: uppercase;
             font-weight: bold;
             line-height: 30px;
