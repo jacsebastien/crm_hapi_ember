@@ -52,6 +52,9 @@ table {
 
 $mainColor : #333;
 $diffMain: #EEE;
+$middleColor: #999;
+$xl: 20px;
+$l: 18px;
 
 body {
     font-family: Arial, Helvetica, sans-serif;
@@ -59,12 +62,20 @@ body {
 
 h1 {
     text-transform: uppercase;
-    font-size: 18px;
+    font-size: $l;
     padding-bottom: 20px;
 }
 
+h2 {
+    text-align: center;
+    font-size: $l;
+    padding-bottom: 16px;
+}
+
 .wrapper {
-    width: 600px;
+    display: flex;
+    display: -webkit-flex;
+    width: 1024px;
     margin: 0 auto;
 }
 
@@ -103,9 +114,9 @@ nav {
 
 .main-nav {
     box-sizing: border-box;
-    display: inline-block;
     border-right: 1px solid $mainColor;
-    width: 150px;
+    // width: 200px;
+    flex-grow: 1;
     & a {
         text-transform: uppercase;
     }
@@ -113,10 +124,9 @@ nav {
 
 .view {
     box-sizing: border-box;
-    display: inline-block;
-    vertical-align: top;
-    padding: 20px 20px 0 20px;
-    width: 450px;
+    padding: 20px;
+    // flex-grow: 5; 
+    flex-basis: 820px;
 }
 
 .view-nav {
@@ -147,6 +157,122 @@ nav {
             &:first-child {
                 text-align: left;
             }
+        }
+    }
+}
+
+form {
+    text-align: center;
+    & fieldset {
+        border: 1px solid $mainColor;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    & legend {
+        text-transform: uppercase;
+    }
+    input {
+        width: 100%;
+        line-height: 18px;
+        margin: 5px 0;
+
+        &[type="submit"]{
+            width: 200px;
+            font-size: 16px;
+            line-height: 30px;
+
+            background-color: $middleColor;
+            border: 0px solid $mainColor;
+            color: $diffMain;
+        }
+    }
+    label {
+        display: inline-block;
+        margin: 5px 0;
+    }
+
+    &  ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    & li {
+        flex-basis: 350px;
+    }
+
+    & .object, .references-cl, .infos {
+        & li:first-child{
+            flex-basis: 100%;
+        }
+    }
+
+    & .articles ul {
+        flex-wrap: nowrap;
+
+        & li {
+            flex-basis: 40px;
+        }
+
+        & .article-name, .article-type {
+            flex-basis: 110px;
+        }
+
+        & .article-amount {
+            flex-basis: 150px;
+        }
+
+        & .article-description {
+            flex-basis: 180px;
+        }
+    }
+
+    & .tots ul {
+        margin: 50px 50px 0 0;
+        width: 350px;
+        float: right;
+        & li {
+            display: flex;
+            text-align: right;
+            & input {
+                flex-basis: 150px;
+                margin-left: 10px;
+            }
+            & label {
+                flex-basis: 200px;
+            }
+        }
+
+        & .article-refund {
+            display: flex;
+            justify-content: space-between;
+            & input {
+                flex-basis: 65px;
+            }
+        }
+
+        & .article-utotal {
+            border-top: 1px solid $mainColor;
+        }
+
+        & .article-total {
+            text-transform: uppercase;
+            font-weight: bold;
+            line-height: 30px;
+            border-top: 3px solid $mainColor;
+        }
+    }
+
+    & .infos {
+        & li:last-child{
+            flex-basis: 100%;
+        }
+
+        & textarea{
+            resize: none;
+            width: 100%;
+            height: 150px;
         }
     }
 }

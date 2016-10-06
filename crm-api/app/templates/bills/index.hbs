@@ -1,0 +1,18 @@
+<section class="view-content">
+    <table>
+        <tr>
+            <th>Numéro</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        {{#each model as |bill|}}
+        <tr>
+            <td>{{bill.name}}</td>
+            <td>{{bill.client.name}}</td>
+            <td>{{moment-format bill.createdat 'DD/MM/YYYY'}}</td>
+            <td><button>Détails</button><button>Editer</button></td>
+        </tr>
+        {{/each}}
+    </table>
+</section>

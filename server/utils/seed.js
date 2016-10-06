@@ -183,7 +183,7 @@ let createCompanies = function(data) {
     return Promise.all(promises)
         .then(function(companies) {
             return _.merge({
-                companies: companies
+                companies: companies.length
             }, data || {});
         });
 };
@@ -197,7 +197,7 @@ let createClients = function(data) {
     return Promise.all(promises)
         .then(function(clients) {
             return _.merge({
-                clients: clients
+                clients: clients.length
             }, data || {});
         });
 };
@@ -211,7 +211,7 @@ let createParams = function(data) {
     return Promise.all(promises)
         .then(function(params) {
             return _.merge({
-                params: params
+                params: params.length
             }, data || {});
         });
 };
