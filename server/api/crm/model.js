@@ -6,7 +6,7 @@ let logger = require(`${process.cwd()}/utils/logger`);
 // let validate = require('mongoose-validator');
 
 // place for validators
-
+//
 // -----------
 
 
@@ -129,9 +129,9 @@ let companyModel = function() {
         articles : [{
             name : String,
             description : String,
-            type: String,
+            pricetype : String,
             price : Number,
-            vat: Number
+            vat : Number
         }],
         createdat : {
             type : Date,
@@ -161,7 +161,7 @@ let companyModel = function() {
             articles: [{
                 name : String,
                 description: String,
-                type: String,
+                pricetype: String,
                 quantity: Number,
                 price: Number,
                 vat: Number,
@@ -327,6 +327,10 @@ let companyModel = function() {
         }],
         vatprefix : [{
             // BE, FR, ...
+            type : String,
+            required : true
+        }],
+        types : [{
             type : String,
             required : true
         }]

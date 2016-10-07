@@ -38,6 +38,13 @@ let params = [{
         "LU",
         "FR",
         "DE"
+    ],
+    "types": [
+        "Pièce",
+        "Heure",
+        "Jour",
+        "Forfait",
+        "Libre"
     ]
 }];
 
@@ -96,8 +103,28 @@ for(let i = 0;i < maxInputs;i++){
         },
         // Terms of Sales
         "terms" : faker.lorem.paragraphs(),
+        "articles" : [{
+            "name" : faker.commerce.product(),
+            "description" : faker.commerce.productName(),
+            "pricetype": "Pièce",
+            "price" : parseFloat(faker.commerce.price()),
+            "vat": 21
+        },{
+            "name" : faker.commerce.product(),
+            "description" : faker.commerce.productName(),
+            "pricetype": "Pièce",
+            "price" : parseFloat(faker.commerce.price()),
+            "vat": 21
+        },{
+            "name" : faker.commerce.product(),
+            "description" : faker.commerce.productName(),
+            "pricetype": "Pièce",
+            "price" : parseFloat(faker.commerce.price()),
+            "vat": 21
+        }],
         "createdat" : faker.date.past()
     };
+
     companies.push(randomCompany);
 
     let randomClient = {

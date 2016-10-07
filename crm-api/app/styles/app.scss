@@ -163,6 +163,7 @@ nav {
 
 form {
     text-align: center;
+
     & fieldset {
         border: 1px solid $mainColor;
         padding: 20px;
@@ -172,6 +173,7 @@ form {
     & legend {
         text-transform: uppercase;
     }
+
     input, select {
         width: 100%;
         line-height: 18px;
@@ -188,6 +190,9 @@ form {
             border: 0px;
             color: $diffMain;
         }
+        &:disabled {
+            background-color: $diffMain;
+        }
     }
 
     select {
@@ -195,40 +200,35 @@ form {
         border-radius: 0px;
     }
 
-    label {
-        display: inline-block;
-        margin: 5px 0;
-    }
-
-    &  ul {
+    & .articles>div {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-    }
-    
-    & li {
-        flex-basis: 350px;
-    }
+        align-content: center;
+        margin-bottom: 20px;
 
-    & .object, .references-cl, .infos {
-        & li:first-child{
-            flex-basis: 100%;
-        }
-    }
-
-    & .articles ul {
-        flex-wrap: nowrap;
-
-        & li {
-            flex-basis: 40px;
+        & input {
+            flex-basis: 30px;
         }
 
-        & .article-name, .article-type {
+        & button {
+            flex-basis: 50px;
+            // font-size: 16px;
+            // line-height: 16px;
+
+            background-color: $mainColor;
+            border: 0px;
+            color: $diffMain;
+        }
+        & .article-price{
+            flex-basis: 50px;
+        }
+        & .article-name, .article-pricetype {
             flex-basis: 110px;
         }
 
         & .article-amount {
-            flex-basis: 150px;
+            flex-basis: 110px;
         }
 
         & .article-description {
@@ -236,40 +236,42 @@ form {
         }
     }
 
-    & .tots ul {
-        margin: 50px 50px 0 0;
+    & .tots {
+        // margin: 50px 50px 0 0;
         width: 350px;
         float: right;
-        & li {
+        &>div {
             display: flex;
+            flex-direction: column;
             text-align: right;
-            & input {
-                flex-basis: 150px;
-                margin-left: 10px;
-            }
-            & label {
-                flex-basis: 200px;
-            }
         }
 
-        & .tots-refund {
-            display: flex;
-            justify-content: space-between;
-            & input {
-                flex-basis: 65px;
-            }
+        & input {
+            width: 150px;
+            margin-left: 0;
         }
 
-        & .tots-utotal {
-            border-top: 1px solid $mainColor;
+        & label input:first-child {
+            margin-left: 10px;
         }
+    }
+    & .tots-refund {
+        & input, select {
+            width: 73px;
+        }
+    }
 
-        & .tots-total {
-            text-transform: uppercase;
-            font-weight: bold;
-            line-height: 30px;
-            border-top: 3px solid $mainColor;
-        }
+    & .tots-utotal {
+        border-top: 1px solid $mainColor;
+        margin-top: 10px;
+    }
+
+    & .tots-total {
+        text-transform: uppercase;
+        font-weight: bold;
+        line-height: 30px;
+        border-top: 3px solid $mainColor;
+        margin-top: 10px;
     }
 
     & .infos {

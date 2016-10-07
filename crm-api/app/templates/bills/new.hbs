@@ -3,122 +3,116 @@
     <form {{action 'saveBill' newBill on="submit"}}>
         <fieldset class="references">
             <legend>Vos références</legend>
-            <ul>
-                <li>
-                    <label for="number">N° de facture</label><br>
+            <div>
+                <label for="number">N° de facture
                     {{input type="text" id="number" value=newBill.number}}
-                </li>
-                <li>
-                    <label for="date">Date de facture</label><br>
+                </label>
+                <label for="date">Date de facture
                     {{input type="date" id="date" value=newBill.date}}
-                </li>
-            </ul>
+                </label>
+            </div>
         </fieldset>
 
         <fieldset class="references-cl">
             <legend>Références Client</legend>
-            <ul>
-                <li>
-                    <label for="client">Client</label><br>
-                    {{#x-select id="client" value=newBill.client}}
-                        {{#each clients as |client|}}
-                            {{#x-option value=client.id}}{{client.name}}{{/x-option}}
-                        {{/each}}
-                    {{/x-select}}
-                </li>
-            </ul>
+            <label for="client">Client</label><br>
+            {{#x-select id="client" value=newBill.client}}
+                {{#each clients as |client|}}
+                    {{#x-option value=client.name}}{{client.name}}{{/x-option}}
+                {{/each}}
+            {{/x-select}}
         </fieldset>
 
         <fieldset class="object">
             <legend>Objet</legend>
-            <ul>
-                <li>
-                    <label for="project-name">Nom du projet</label><br>
+            <div>
+                <label for="project-name">Nom du projet
                     {{input type="text" id="project-name" value=newBill.project.name}}
-                </li>
-                <li>
-                    <label for="project-begin">Date de début</label><br>
-                    {{input type="text" id="project-begin" value=newBill.project.begin}}
-                </li>
-                <li>
-                    <label for="project-end">Date de fin</label><br>
-                    {{input type="text" id="project-end" value=newBill.project.end}}
-                </li>
-            </ul>
+                </label>
+            </div>
+            <div>
+                <label for="project-begin">Date de début
+                    {{input type="date" id="project-begin" value=newBill.project.begin}}
+                </label>
+                <label for="project-end">Date de fin
+                    {{input type="date" id="project-end" value=newBill.project.end}}
+                </label>
+            </div>
         </fieldset>
 
         <fieldset class="detail">
             <legend>Détail</legend>
             <div class="articles">
-                <ul>
-                    <li class="article-name">
-                        <label for="article-name">Article</label><br>
-                        {{input type="text" id="article-name" value=newBill.details.articles.name}}
-                    </li>
+                <div>
+                    <label for="article-name" class="article-name">Article</label>
+                    <label for="article-description" class="article-description">Description</label>
+                    <label for="article-quantity" class="article-quantity">Qté</label>
+                    <label for="article-pricetype" class="article-pricetype">Type</label>
+                    <label for="article-price" class="article-price">P/U</label>
+                    <label for="article-amount" class="article-amount">Montant HTVA</label>
+                    <label for="article-vat" class="article-vat">TVA</label>
+                    <span>Action</span>
+                </div>
+                {{#each listArticles as |savedArticle|}}
+                <div>
+                    {{input type="text" class="article-name" value=savedArticle.name disabled=true}}
+                    {{input type="text" class="article-description" value=savedArticle.description disabled=true}}
+                    {{input type="text" class="article-quantity" value=savedArticle.quantity disabled=true}}
+                    {{input type="text" class="article-pricetype" value=savedArticle.pricetype disabled=true}}
+                    {{input type="text" class="article-price" value=savedArticle.price disabled=true}}
+                    {{input type="text" class="article-amount" value=savedArticle.amount disabled=true}}
+                    {{input type="text" class="article-vat" value=savedArticle.vat disabled=true}}
+                    <button {{action 'deleteArticle' savedArticle}}> - </button>
+                </div>
+                {{/each}}
+                <div>
+                    {{#x-select id="article-name" class="article-name" value=newArticle action='setArticle'}}
+                        {{#each company.articles as |article|}}
+                            {{#x-option value=article}}{{article.name}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
                     
-                    <li class="article-description">
-                        <label for="article-description">Description</label><br>
-                        {{input type="text" id="article-description" value=newBill.details.articles.description}}
-                    </li>
-
-                    <li class="article-type">
-                        <label for="article-type">Type</label><br>
-                        {{input type="text" id="article-type" value=newBill.details.articles.type}}
-                    </li>
-
-                    <li class="article-quantity">
-                        <label for="article-quantity">Qté</label><br>
-                        {{input type="text" id="article-quantity" value=newBill.details.articles.quantity}}
-                    </li>
-
-                    <li class="article-price">
-                        <label for="article-price">P/U</label><br>
-                        {{input type="text" id="article-price" value=newBill.details.articles.price}}
-                    </li>
-
-                    <li class="article-amount">
-                        <label for="article-amount">Montant</label><br>
-                        {{input type="text" id="article-amount" value=newBill.details.articles.amount}}
-                    </li>
-
-                    <li class="article-vat">
-                        <label for="article-vat">TVA</label><br>
-                        {{input type="text" id="article-vat" value=newBill.details.articles.vat}}
-                    </li>
-                </ul>
+                    {{input type="text" id="article-description" class="article-description" value=newArticle.description disabled=true}}
+                    {{input type="number" id="article-quantity" class="article-quantity" value=newArticle.quantity action='calcAmount' on='key-up'}}
+                    {{input type="text" id="article-pricetype" class="article-pricetype" value=newArticle.pricetype disabled=true}}
+                    {{input type="number" id="article-price" class="article-price" value=newArticle.price disabled=true}}
+                    {{input type="number" id="article-amount" class="article-amount" value=newArticle.amount disabled=true}}
+                    {{input type="text" id="article-vat" class="article-vat" value=newArticle.vat disabled=true}}
+                    <button {{action 'addArticle' newArticle}}>Ajouter</button>
+                </div>
             </div>
             <div class="tots">
-                <ul>
-                    <li>
-                        <label for="tots-totxvat">Total hors taxes</label>
-                        {{input type="text" id="tots-totxvat" value=newBill.details.totxvat}}
-                    </li>
-                    <li class="tots-refund">
-                        <label for="tots-refund">Ristourne</label>
+                <div>
+                    <label for="tots-totxvat">Total hors taxes
+                        {{input type="text" id="tots-totxvat" value=newBill.details.totxvat disabled=true}}
+                    </label>
+
+                    <label for="tots-refund" class="tots-refund">Ristourne
                         {{input type="text" id="tots-refund" value=newBill.details.refund}}
-                        {{input type="text" id="tots-refundtype" value=newBill.details.refundtype}}
-                    </li>
-                    <li>
-                        <label for="tots-utotxvat">Sous-Total hors taxes</label>
-                        {{input type="text" id="tots-utotxvat" value=newBill.details.utotxvat}}
-                    </li>
-                    <li>
-                        <label for="tots-vat">TVA</label>
-                        {{input type="text" id="tots-vat" value=newBill.details.vat}}
-                    </li>
-                    <li class="tots-utotal">
-                        <label for="tots-utotal">Total TTC</label>
-                        {{input type="text" id="tots-utotal" value=newBill.details.utotal}}
-                    </li>
-                    <li>
-                        <label for="tots-advance">Accompte</label>
+                        {{#x-select id="tots-refundtype" value=newBill.details.refundtype}}
+                            {{#each params.refunds as |refund|}}
+                                {{#x-option value=refund}}{{refund}}{{/x-option}}
+                            {{/each}}
+                        {{/x-select}}
+                    </label>
+                    
+                    <label for="tots-utotxvat">Sous-Total hors taxes
+                        {{input type="text" id="tots-utotxvat" value=newBill.details.utotxvat disabled=true}}
+                    </label>
+                    
+                    <label for="tots-vat">TVA
+                        {{input type="text" id="tots-vat" value=newBill.details.vat disabled=true}}
+                    </label>
+                    <label for="tots-utotal" class="tots-utotal">Total TTC
+                        {{input type="text" id="tots-utotal" value=newBill.details.utotal disabled=true}}
+                    </label>
+                    <label for="tots-advance">Accompte
                         {{input type="text" id="tots-advance" value=newBill.details.advance}}
-                    </li>
-                    <li class="tots-total">
-                        <label for="tots-total">A payer</label>
-                        {{input type="text" id="tots-total" value=newBill.details.total}}
-                    </li>
-                </ul>
+                    </label>
+                    <label for="tots-total" class="tots-total">A payer
+                        {{input type="text" id="tots-total" value=newBill.details.total disabled=true}}
+                    </label>
+                </div>
             </div>
         </fieldset>
 
