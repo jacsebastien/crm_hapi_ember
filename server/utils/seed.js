@@ -84,15 +84,23 @@ for(let i = 0;i < maxInputs;i++){
             "phonesec" : faker.phone.phoneNumber()
         },
         "paymentinfo" : {
-            "bank" : [{
-                "name" : faker.finance.accountName(),
-                "iban" : faker.finance.account(),
-                "bic" : ""
-            },{
-                "name" : faker.finance.accountName(),
-                "iban" : faker.finance.account(),
-                "bic" : ""
-            }]
+            "bank" : [
+                {
+                    "name" : faker.finance.accountName(),
+                    "iban" : faker.finance.account(),
+                    "bic" : ""
+                },{
+                    "name" : faker.finance.accountName(),
+                    "iban" : faker.finance.account(),
+                    "bic" : ""
+                }
+            ],
+            "paypal" : [
+                {
+                    "name": "Paypal Account",
+                    "mail": faker.internet.email()
+                }
+            ]
         },
         "logo" : "",
         "billsettings" : {
@@ -103,25 +111,33 @@ for(let i = 0;i < maxInputs;i++){
         },
         // Terms of Sales
         "terms" : faker.lorem.paragraphs(),
-        "articles" : [{
-            "name" : faker.commerce.product(),
-            "description" : faker.commerce.productName(),
-            "pricetype": "Pièce",
-            "price" : parseFloat(faker.commerce.price()),
-            "vat": 21
-        },{
-            "name" : faker.commerce.product(),
-            "description" : faker.commerce.productName(),
-            "pricetype": "Pièce",
-            "price" : parseFloat(faker.commerce.price()),
-            "vat": 21
-        },{
-            "name" : faker.commerce.product(),
-            "description" : faker.commerce.productName(),
-            "pricetype": "Pièce",
-            "price" : parseFloat(faker.commerce.price()),
-            "vat": 21
-        }],
+        "articles" : [
+            {
+                "name" : faker.commerce.product(),
+                "description" : faker.commerce.productName(),
+                "pricetype": "Pièce",
+                "price" : parseFloat(faker.commerce.price()),
+                "vat": 21
+            },{
+                "name" : faker.commerce.product(),
+                "description" : faker.commerce.productName(),
+                "pricetype": "Pièce",
+                "price" : parseFloat(faker.commerce.price()),
+                "vat": 6
+            },{
+                "name" : faker.commerce.product(),
+                "description" : faker.commerce.productName(),
+                "pricetype": "Pièce",
+                "price" : parseFloat(faker.commerce.price()),
+                "vat": 21
+            },{
+                "name" : faker.commerce.product(),
+                "description" : faker.commerce.productName(),
+                "pricetype": "Pièce",
+                "price" : parseFloat(faker.commerce.price()),
+                "vat": 0
+            }
+        ],
         "createdat" : faker.date.past()
     };
 

@@ -5,5 +5,6 @@ export default DS.Model.extend({
     refunds : DS.attr(),
     countries : DS.attr(),
     vatrate : DS.attr(),
-    vatprefix : DS.attr()
+    vatprefix : DS.attr(),
+    types: DS.attr()
 });

@@ -5,20 +5,20 @@
             <legend>Vos références</legend>
             <div>
                 <label for="number">N° de facture
-                    {{input type="text" id="number" value=newBill.number}}
+                    {{input type="text" id="number" value=newBill.number disabled=true}}
                 </label>
-                <label for="date">Date de facture
-                    {{input type="date" id="date" value=newBill.date}}
+                <label for="date">Date de facture *
+                    {{input type="date" id="date" value=newBill.date focus-out='changeNumber' key-up='changeNumber'}}
                 </label>
             </div>
         </fieldset>
 
         <fieldset class="references-cl">
             <legend>Références Client</legend>
-            <label for="client">Client</label><br>
+            <label for="client">Client *</label><br>
             {{#x-select id="client" value=newBill.client}}
                 {{#each clients as |client|}}
-                    {{#x-option value=client.name}}{{client.name}}{{/x-option}}
+                    {{#x-option value=client.id}}{{client.name}}{{/x-option}}
                 {{/each}}
             {{/x-select}}
         </fieldset>
@@ -26,15 +26,15 @@
         <fieldset class="object">
             <legend>Objet</legend>
             <div>
-                <label for="project-name">Nom du projet
+                <label for="project-name">Nom du projet *
                     {{input type="text" id="project-name" value=newBill.project.name}}
                 </label>
             </div>
             <div>
-                <label for="project-begin">Date de début
+                <label for="project-begin">Date de début *
                     {{input type="date" id="project-begin" value=newBill.project.begin}}
                 </label>
-                <label for="project-end">Date de fin
+                <label for="project-end">Date de fin *
                     {{input type="date" id="project-end" value=newBill.project.end}}
                 </label>
             </div>
@@ -53,6 +53,45 @@
                     <label for="article-vat" class="article-vat">TVA</label>
                     <span>Action</span>
                 </div>
+                <div class="articles-list">
+                    {{#x-select id="article-name" class="article-name" value=newArticle action='setArticle'}}
+                        {{#each company.articles as |article|}}
+                            {{#x-option value=article}}{{article.name}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
+                    {{input type="text" id="article-description" class="article-description" value=newArticle.description disabled=true}}
+                    {{input type="number" id="article-quantity" class="article-quantity" value=newArticle.quantity key-up='calcNewAmount'}}
+                    {{input type="text" id="article-pricetype" class="article-pricetype" value=newArticle.pricetype disabled=true}}
+                    {{input type="number" id="article-price" class="article-price" value=newArticle.price disabled=true}}
+                    {{input type="number" id="article-amount" class="article-amount" value=newArticle.amount disabled=true}}
+                    {{input type="text" id="article-vat" class="article-vat" value=newArticle.vat disabled=true}}
+                    <button {{action 'addArticle' newArticle}}>Ajouter</button>
+                </div>
+                <h3>Créer un article : <button {{action 'showForm'}}>{{#if isShowForm}} - {{else}} + {{/if}}</button></h3>
+                
+                <div class="articles-list">
+                    {{#if isShowForm}}
+                        {{input type="text" class="article-name" value=writedArticle.name}}
+                        {{input type="text" class="article-description" value=writedArticle.description}}
+                        {{input type="number" class="article-quantity" value=writedArticle.quantity key-up='calcWritedAmount'}}
+                        {{#x-select class="article-pricetype" value=writedArticle.pricetype}}
+                            {{#each params.types as |pricetype|}}
+                                {{#x-option value=pricetype}}{{pricetype}}{{/x-option}}
+                            {{/each}}
+                        {{/x-select}}
+                        {{input type="number" class="article-price" value=writedArticle.price key-up='calcWritedAmount'}}
+                        {{input type="number" class="article-amount" value=writedArticle.amount disabled=true}}
+                        {{#x-select class="article-vat" value=writedArticle.vat}}
+                            {{#each params.vatrate as |vat|}}
+                                {{#x-option value=vat}}{{vat}}{{/x-option}}
+                            {{/each}}
+                        {{/x-select}}
+                        <button {{action 'createArticle' writedArticle}}>Créer</button>
+                    {{/if}}
+                </div>
+                {{#if listArticles}}
+                    <h3>Articles ajoutés :</h3>
+                {{/if}}
                 {{#each listArticles as |savedArticle|}}
                 <div>
                     {{input type="text" class="article-name" value=savedArticle.name disabled=true}}
@@ -65,21 +104,7 @@
                     <button {{action 'deleteArticle' savedArticle}}> - </button>
                 </div>
                 {{/each}}
-                <div>
-                    {{#x-select id="article-name" class="article-name" value=newArticle action='setArticle'}}
-                        {{#each company.articles as |article|}}
-                            {{#x-option value=article}}{{article.name}}{{/x-option}}
-                        {{/each}}
-                    {{/x-select}}
-                    
-                    {{input type="text" id="article-description" class="article-description" value=newArticle.description disabled=true}}
-                    {{input type="number" id="article-quantity" class="article-quantity" value=newArticle.quantity action='calcAmount' on='key-up'}}
-                    {{input type="text" id="article-pricetype" class="article-pricetype" value=newArticle.pricetype disabled=true}}
-                    {{input type="number" id="article-price" class="article-price" value=newArticle.price disabled=true}}
-                    {{input type="number" id="article-amount" class="article-amount" value=newArticle.amount disabled=true}}
-                    {{input type="text" id="article-vat" class="article-vat" value=newArticle.vat disabled=true}}
-                    <button {{action 'addArticle' newArticle}}>Ajouter</button>
-                </div>
+                
             </div>
             <div class="tots">
                 <div>
@@ -88,8 +113,8 @@
                     </label>
 
                     <label for="tots-refund" class="tots-refund">Ristourne
-                        {{input type="text" id="tots-refund" value=newBill.details.refund}}
-                        {{#x-select id="tots-refundtype" value=newBill.details.refundtype}}
+                        {{input type="text" id="tots-refund" value=newBill.details.refund key-up='changeValues'}}
+                        {{#x-select id="tots-refundtype" value=newBill.details.refundtype action='changeValues'}}
                             {{#each params.refunds as |refund|}}
                                 {{#x-option value=refund}}{{refund}}{{/x-option}}
                             {{/each}}
@@ -107,7 +132,7 @@
                         {{input type="text" id="tots-utotal" value=newBill.details.utotal disabled=true}}
                     </label>
                     <label for="tots-advance">Accompte
-                        {{input type="text" id="tots-advance" value=newBill.details.advance}}
+                        {{input type="text" id="tots-advance" value=newBill.details.advance key-up='changeValues'}}
                     </label>
                     <label for="tots-total" class="tots-total">A payer
                         {{input type="text" id="tots-total" value=newBill.details.total disabled=true}}
@@ -120,16 +145,35 @@
             <legend>Informations et règles de paiement</legend>
             <ul>
                 <li>
-                    <label for="deadline">Echéance</label><br>
-                    {{input type="text" id="deadline" value=newBill.deadline}}
+                    <label for="deadline">Echéance *</label><br>
+                    {{#x-select id="deadline" value=newBill.deadline}}
+                        {{#each params.rules as |rule|}}
+                            {{#x-option value=rule}}{{rule}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
                 </li>
                 <li>
-                    <label for="primaccount">Mode de paiement principal</label><br>
-                    {{input type="text" id="primaccount" value=newBill.primaccount}}
+                    <label for="primaccount">Mode de paiement principal *</label><br>
+                    {{#x-select id="primaccount" value=newBill.primaccount}}
+                        {{#each company.paymentinfo.bank as |bank|}}
+                            {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
+                        {{/each}}
+                        {{#each company.paymentinfo.paypal as |paypal|}}
+                            {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
                 </li>
                 <li>
                     <label for="secaccount">Mode de paiement secondaire</label><br>
-                    {{input type="text" id="secaccount" value=newBill.secaccount}}
+                    {{#x-select id="secaccount" value=newBill.secaccount}}
+                        {{#x-option value=""}}Aucun{{/x-option}}
+                        {{#each company.paymentinfo.bank as |bank|}}
+                            {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
+                        {{/each}}
+                        {{#each company.paymentinfo.paypal as |paypal|}}
+                            {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
                 </li>
                 <li>
                     <label for="note">Notes</label><br>

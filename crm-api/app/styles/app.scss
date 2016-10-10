@@ -207,8 +207,8 @@ form {
         align-content: center;
         margin-bottom: 20px;
 
-        & input {
-            flex-basis: 30px;
+        & input, select {
+            flex-basis: 35px;
         }
 
         & button {
@@ -229,6 +229,8 @@ form {
 
         & .article-amount {
             flex-basis: 110px;
+            text-align: right;
+            padding-right: 5px;
         }
 
         & .article-description {
@@ -236,9 +238,15 @@ form {
         }
     }
 
+    & .articles-list {
+        border-bottom: 1px solid $mainColor;
+        padding-bottom: 10px;
+    }
+
     & .tots {
         // margin: 50px 50px 0 0;
         width: 350px;
+        margin-right: 95px;
         float: right;
         &>div {
             display: flex;
@@ -249,6 +257,8 @@ form {
         & input {
             width: 150px;
             margin-left: 0;
+            text-align: right;
+            padding-right: 5px;
         }
 
         & label input:first-child {
