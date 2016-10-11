@@ -68,7 +68,9 @@
                     <button {{action 'addArticle' newArticle}}>Ajouter</button>
                 </div>
                 <h3>Créer un article : <button {{action 'showForm'}}>{{#if isShowForm}} - {{else}} + {{/if}}</button></h3>
-                
+                {{#if errorNewArticle}}
+                    <span class="error">Merci de compléter tous les champs</span>
+                {{/if}}
                 <div class="articles-list">
                     {{#if isShowForm}}
                         {{input type="text" class="article-name" value=writedArticle.name}}

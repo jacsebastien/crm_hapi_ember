@@ -146,16 +146,35 @@ let companyModel = function() {
     let Bill = Schema({
         // the link of the pdf when printed => if undefined we can edit the bill
         link: String,
-        number: String,
-        date: Date,
+        number: {
+            type: String,
+            required : true
+        },
+        date: {
+            type: Date,
+            required : true
+        },
         client: {
             type: Schema.Types.ObjectId,
             ref: 'client'
         },
+        company: {
+            type: Schema.Types.ObjectId,
+            ref: 'company'
+        },
         project: {
-            name: String,
-            begin: Date, // date
-            end: Date
+            name: {
+                type: String,
+                required : true
+            },
+            begin: {
+                type: Date,
+                required : true
+            },
+            end: {
+                type: Date,
+                required : true
+            }
         },
         details: {
             articles: [{
@@ -174,7 +193,10 @@ let companyModel = function() {
 
             // all tots are auto calculated
         },
-        deadline: String,
+        deadline: {
+            type: String,
+            required : true
+        },
         // can have multiple data type in function of the account type
         primaccount: Schema.Types.Mixed,
         secaccount: Schema.Types.Mixed,

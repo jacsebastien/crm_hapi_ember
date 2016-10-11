@@ -82,6 +82,7 @@ exports.post = function(req, res) {
 exports.update = function(req, res) {
     logger.log("-- UPDATE Ctrl");
 
+    let request = {};
     if(req.payload.data)
         request = req.payload.data.attributes;
 
@@ -93,6 +94,11 @@ exports.update = function(req, res) {
                 res(Boom.badRequest(err.message));
                 return;
             }
+            if(data === null){
+                res(Boom.badRequest('This Documents does not exists !'));
+                return;
+            }
+            
             let attributes = {
                 message: 'Document updated'
             };

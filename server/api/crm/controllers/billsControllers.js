@@ -3,6 +3,7 @@
 let logger = require(`${process.cwd()}/utils/logger`);
 let utils = require(`${process.cwd()}/utils/utils`)
 let model = require('../model');
+let companyModel = model;
 model = model.Bill;
 
 let Boom = require('boom');
@@ -22,7 +23,7 @@ exports.get = function(req, res) {
         ]};
     }
 
-    model.find(query).populate('client')
+    model.find(query).populate('client company')
     .then(function(docs){
         let documents = [];
         docs.map(function(documentFromDb){
@@ -60,26 +61,49 @@ exports.post = function(req, res) {
     let request = {};
     if(req.payload.data)
         request = req.payload.data.attributes;
-    let company = new model(request);
+    let newModel = new model(request);
 
-    company.save(function(err, data) {
+    newModel.save(function(err, data) {
         if(err) {
-            logger.warn(err.message);
+            logger.warn(err);
             res(Boom.badRequest(err.message));
             return;
         }
-        let attributes = {
-            message: 'Document saved'
-        };
         logger.log(data);
-        // use a custom function from the utils file to avoid redundancy
-        res(utils.formatJson(type, data._id, attributes));
+        companyModel.findById(request.company,
+            function(err, companyFromDb){
+                if(err) {
+                    logger.warn(err.message);
+                    res(Boom.badRequest(err.message));
+                    return;
+                }
+                
+                companyFromDb.bills.push(newModel._id);
+                logger.log(companyFromDb);
+                // model.findByIdAndUpdate(request.company, companyFromDb,
+                //     function(err, data) {
+                //         if(err) {
+                //             logger.warn(err.message);
+                //             res(Boom.badRequest(err.message));
+                //             return;
+                //         }
+                //         let attributes = {
+                //             message: 'Document saved'
+                //         };
+                        
+                //         // use a custom function from the utils file to avoid redundancy
+                //         res(utils.formatJson(type, data._id, attributes));
+                //     }
+                // );
+            }
+        );
     });
 };
 
 exports.update = function(req, res) {
     logger.log("-- UPDATE Ctrl");
 
+    let request = {};
     if(req.payload.data)
         request = req.payload.data.attributes;
 
@@ -89,6 +113,10 @@ exports.update = function(req, res) {
             if(err) {
                 logger.warn(err.message);
                 res(Boom.badRequest(err.message));
+                return;
+            }
+            if(data === null){
+                res(Boom.badRequest('This Documents does not exists !'));
                 return;
             }
             let attributes = {

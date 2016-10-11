@@ -210,6 +210,7 @@ let cleanDB = function() {
         .map(function(model) {
             let remove = model.remove().exec();
             remove.clients = model.Client.remove().exec();
+            remove.bills = model.Bill.remove().exec();
             remove.params = model.Param.remove().exec();
             return remove;
         });

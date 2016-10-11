@@ -5,6 +5,7 @@ export default DS.Model.extend({
     number: DS.attr(),
     date: DS.attr(),
     client: DS.attr(),
+    company: DS.attr(),
     project: DS.attr(),
     details: DS.attr(),
     deadline: DS.attr(),

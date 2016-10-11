@@ -31,19 +31,18 @@ export default Ember.Route.extend({
 
         // auto-generated bill number
         let billnumber = moment().format('YYYYMMDD');
-        let todaybills = 1;
-        controller.get('company.bills').map(function(bill){
-            if(bill.date === now){
-                todaybills ++;
-            }
-        });
-        if(todaybills < 10){
-            todaybills = "00"+todaybills;
-        } else {
-            todaybills = "0"+todaybills;
+        let billIncrement = controller.get('company.bills').length;
+        billIncrement ++;
+        if(billIncrement < 10){
+            billIncrement = "00"+billIncrement;
+        } else if(billIncrement < 100){
+            billIncrement = "0"+billIncrement;
         }
-        billnumber += "-"+todaybills;
+        billnumber += "-"+billIncrement;
         controller.set('newBill.number', billnumber);
+
+        // projet 
+        controller.set('newBill.project', {});
 
         // articles
         controller.set('newBill.details', {});
@@ -59,6 +58,8 @@ export default Ember.Route.extend({
         controller.set('newArticles', this.newArticles);
         // value to show/hide the "create new article" part of the form
         controller.set('isShowForm', false);
+        
+        controller.set('errorNewArticle', false);
 
         // define new void article for the "create new article" part of the form
         controller.set('writedArticle', {});
@@ -127,20 +128,15 @@ export default Ember.Route.extend({
     },
     actions : {
         changeNumber(){
-            let now = moment().format('DD-MM-YYYY');
             let billnumber = moment(this.controller.get('newBill.date')).format('YYYYMMDD');
-            let todaybills = 1;
-            this.controller.get('company.bills').map(function(bill){
-                if(bill.date === now){
-                    todaybills ++;
-                }
-            });
-            if(todaybills < 10){
-                todaybills = "00"+todaybills;
-            } else {
-                todaybills = "0"+todaybills;
+            let billIncrement = this.controller.get('company.bills').length;
+            billIncrement ++;
+            if(billIncrement < 10){
+                billIncrement = "00"+billIncrement;
+            } else if(billIncrement < 100){
+                billIncrement = "0"+billIncrement;
             }
-            billnumber += "-"+todaybills;
+            billnumber += "-"+billIncrement;
             this.controller.set('newBill.number', billnumber);
         },
         setArticle() {
@@ -191,7 +187,20 @@ export default Ember.Route.extend({
             this.newArticle(article, false);
         },
         createArticle(article){
-            this.newArticle(article, true);
+            if(article.name === undefined || article.description === undefined || article.quantity === undefined || article.price === undefined){
+                this.controller.set('errorNewArticle', true);
+            } else {
+                this.controller.set('errorNewArticle', false);
+                // Trick to avoid undefined value when we don't change the value of the dropdown
+                if(article.pricetype === undefined){
+                    article.pricetype = this.controller.get('params.types.0');
+                }
+                if(article.vat === undefined){
+                    article.vat = this.controller.get('params.vat.0');
+                }
+
+                this.newArticle(article, true);            
+            }
         },
         deleteArticle(article){
             // console.log(article);
@@ -222,11 +231,34 @@ export default Ember.Route.extend({
             this.calculateTots();
         },
         saveBill(newBill) {
-            let tempList = this.controller.get('listArticles');
-            newBill.set('details.articles', tempList);
+            // get the list of article to add to the bill
+            let billArticles = this.controller.get('listArticles');
+            newBill.set('details.articles', billArticles);
+            newBill.set('company', this.controller.get('company.id'));
             console.log(newBill);
+
+            // get the list of articles to add to the companie's articles list 
+            let newCompanyArticles = this.controller.get('newArticles');
+            let companyArticles = this.controller.get('company.articles');
+            newCompanyArticles.map(function(article){
+                companyArticles.pushObject(article);
+            });
+            this.controller.set('company.articles', companyArticles);
+
             // add new articles to articles list of company
-            // add the new bill in bills collection
+            this.controller.get('company').save()
+            .then((response)=>{
+                console.log(response);
+                // add the new bill in bills collection
+                newBill.save()
+                .then((response) =>{
+                    console.log(response);
+                }, (response) =>{
+                    console.log(response);
+                });
+            }, (response)=>{
+                console.log(response);
+            });
         }
     }
 });

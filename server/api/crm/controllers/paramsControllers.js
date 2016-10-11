@@ -52,9 +52,9 @@ exports.post = function(req, res) {
     let request = {};
     if(req.payload.data)
         request = req.payload.data.attributes;
-    let company = new model(request);
+    let newModel = new model(request);
 
-    company.save(function(err, data) {
+    newModel.save(function(err, data) {
         if(err) {
             logger.warn(err.message);
             res(Boom.badRequest(err.message));
@@ -72,6 +72,7 @@ exports.post = function(req, res) {
 exports.update = function(req, res) {
     logger.log("-- UPDATE Ctrl");
 
+    let request = {};
     if(req.payload.data)
         request = req.payload.data.attributes;
 
@@ -81,6 +82,10 @@ exports.update = function(req, res) {
             if(err) {
                 logger.warn(err.message);
                 res(Boom.badRequest(err.message));
+                return;
+            }
+            if(data === null){
+                res(Boom.badRequest('This Documents does not exists !'));
                 return;
             }
             let attributes = {
