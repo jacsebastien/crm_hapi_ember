@@ -8,8 +8,6 @@ let Boom = require('boom');
 
 let type = 'company';
 
-logger.log("Companies Controllers");
-
 exports.get = function(req, res) {
     logger.log("-- GET Ctrl");
 
@@ -43,8 +41,9 @@ exports.get = function(req, res) {
 exports.getOne = function(req, res) {
     logger.log("-- GET ONE Ctrl");
 
-    model.findById(req.params.id,
-        function(err, documentFromDb){
+    model.findById(req.params.id)
+    .populate('clients bills')
+    .exec(function(err, documentFromDb){
             if(err) {
                 logger.warn(err.message);
                 res(Boom.badRequest(err.message));
@@ -98,7 +97,7 @@ exports.update = function(req, res) {
                 res(Boom.badRequest('This Documents does not exists !'));
                 return;
             }
-            
+
             let attributes = {
                 message: 'Document updated'
             };

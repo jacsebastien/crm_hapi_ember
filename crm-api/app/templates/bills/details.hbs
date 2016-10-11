@@ -1,0 +1,113 @@
+<section class="view-content bill-details">
+    <h2>Détails de la facture :</h2>
+    <div>
+        
+    </div>
+    <h3>Vos références</h3>
+    <ul>
+        <li>N° de facture : {{model.number}}</li>
+        <li>Date de facture : {{moment-format model.date 'DD/MM/YYYY'}}</li>
+    </ul>
+
+    <h3>Références Client</h3>
+    <ul>
+        <li>Client : {{model.client.name}}</li>
+    </ul>
+
+    <h3>Objet</h3>
+    <ul>
+        <li>Nom du projet : {{model.project.name}}</li>
+        <li>Date de début : {{moment-format model.project.begin 'DD/MM/YYYY'}}</li>
+        <li>Date de fin : {{moment-format model.project.end 'DD/MM/YYYY'}}</li>
+    </ul>
+
+    <h3>Détail</h3>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Qté</th>
+            <th>Type</th>
+            <th>Prix</th>
+            <th>Montant HTVA</th>
+            <th>TVA</th>
+        </tr>
+        {{#each model.details.articles as |article|}}
+            <tr>
+                <td>{{article.name}}</td>
+                <td>{{article.description}}</td>
+                <td>{{article.quantity}}</td>
+                <td>{{article.pricetype}}</td>
+                <td>{{article.price}}</td>
+                <td>{{article.amount}}</td>
+                <td>{{article.vat}}%</td>
+            </tr>
+        {{/each}}
+        <tr>
+            <td colspan="5">
+                Total hors taxes :
+            </td>
+            <td colspan="2">
+                {{model.details.totxvat}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                Ristourne :
+            </td>
+            <td colspan="2">
+                {{model.details.refund}} {{model.details.refundtype}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                Sous-Total hors taxes :
+            </td>
+            <td colspan="2">
+                {{model.details.utotxvat}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                TVA :
+            </td>
+            <td colspan="2">
+                {{model.details.vat}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+               Total TTC :
+            </td>
+            <td colspan="2">
+                {{model.details.utotal}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+               Acompte :
+            </td>
+            <td colspan="2">
+                {{model.details.advance}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+               A payer :
+            </td>
+            <td colspan="2">
+                {{model.details.total}}
+            </td>
+        </tr>
+    </table>
+
+    <h3>Informations et règles de paiement</h3>
+    <ul>
+        <li>Echéance : {{model.deadline}}</li>
+        <li>Mode de paiement principal : {{model.primaccount}}</li>
+        <li>Mode de paiement secondaire : {{model.secaccount}}</li>
+        <li>Notes : <br>
+            {{model.note}}
+        </li>
+    </ul>
+</section>

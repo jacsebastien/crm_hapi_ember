@@ -9,8 +9,6 @@ let Boom = require('boom');
 
 let type = 'param';
 
-logger.log("Params Controllers");
-
 exports.get = function(req, res) {
     logger.log("-- GET Ctrl");
 

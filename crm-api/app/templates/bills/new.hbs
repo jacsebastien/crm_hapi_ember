@@ -139,7 +139,7 @@
                     <label for="tots-utotal" class="tots-utotal">Total TTC
                         {{input type="text" id="tots-utotal" value=newBill.details.utotal disabled=true}}
                     </label>
-                    <label for="tots-advance">Accompte
+                    <label for="tots-advance">Acompte
                         {{input type="text" id="tots-advance" value=newBill.details.advance key-up='changeValues'}}
                     </label>
                     <label for="tots-total" class="tots-total">A payer
@@ -151,43 +151,38 @@
 
         <fieldset class="infos">
             <legend>Informations et règles de paiement</legend>
-            <ul>
-                <li>
-                    <label for="deadline">Echéance *</label><br>
-                    {{#x-select id="deadline" value=newBill.deadline}}
-                        {{#each params.rules as |rule|}}
-                            {{#x-option value=rule}}{{rule}}{{/x-option}}
-                        {{/each}}
-                    {{/x-select}}
-                </li>
-                <li>
-                    <label for="primaccount">Mode de paiement principal *</label><br>
-                    {{#x-select id="primaccount" value=newBill.primaccount}}
-                        {{#each company.paymentinfo.bank as |bank|}}
-                            {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
-                        {{/each}}
-                        {{#each company.paymentinfo.paypal as |paypal|}}
-                            {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
-                        {{/each}}
-                    {{/x-select}}
-                </li>
-                <li>
-                    <label for="secaccount">Mode de paiement secondaire</label><br>
-                    {{#x-select id="secaccount" value=newBill.secaccount}}
-                        {{#x-option value=""}}Aucun{{/x-option}}
-                        {{#each company.paymentinfo.bank as |bank|}}
-                            {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
-                        {{/each}}
-                        {{#each company.paymentinfo.paypal as |paypal|}}
-                            {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
-                        {{/each}}
-                    {{/x-select}}
-                </li>
-                <li>
-                    <label for="note">Notes</label><br>
-                    {{textarea id="note" value=newBill.note cols="100" rows="6"}}
-                </li>
-            </ul>
+            <div>
+                <label for="deadline">Echéance *</label><br>
+                {{#x-select id="deadline" value=newBill.deadline}}
+                    {{#each params.rules as |rule|}}
+                        {{#x-option value=rule}}{{rule}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}
+                
+                <label for="primaccount">Mode de paiement principal *</label><br>
+                {{#x-select id="primaccount" value=newBill.primaccount}}
+                    {{#each company.paymentinfo.bank as |bank|}}
+                        {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
+                    {{/each}}
+                    {{#each company.paymentinfo.paypal as |paypal|}}
+                        {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}
+                    
+                <label for="secaccount">Mode de paiement secondaire</label><br>
+                {{#x-select id="secaccount" value=newBill.secaccount}}
+                    {{#x-option value=""}}Aucun{{/x-option}}
+                    {{#each company.paymentinfo.bank as |bank|}}
+                        {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
+                    {{/each}}
+                    {{#each company.paymentinfo.paypal as |paypal|}}
+                        {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}
+
+                <label for="note">Notes</label><br>
+                {{textarea id="note" value=newBill.note cols="100" rows="6"}}
+            </div>
         </fieldset>
         
         {{input type="submit" value="Créer"}}

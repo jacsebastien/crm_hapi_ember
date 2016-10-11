@@ -15,7 +15,7 @@
             <td>{{bill.number}}</td>
             <td>{{bill.client.name}}</td>
             <td>{{moment-format bill.createdat 'DD/MM/YYYY'}}</td>
-            <td><button>Détails</button><button>Editer</button></td>
+            <td>{{#link-to 'bills.details' bill.id tagName="button"}}Détails{{/link-to}}<button>Editer</button></td>
         </tr>
         {{/each}}
     </table>

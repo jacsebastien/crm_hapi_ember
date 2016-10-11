@@ -362,8 +362,7 @@ let companyModel = function() {
     var exports = module.exports = Base;
     Base.Client = mongoose.model('client', Client, 'clients');
     Base.Bill = mongoose.model('bill', Bill, 'bills');
-    Base.Param = mongoose.model('param', Param, 'params')
-    logger.log(Base);
+    Base.Param = mongoose.model('param', Param, 'params');
 
     return Base;
 };
