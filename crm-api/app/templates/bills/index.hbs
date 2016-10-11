@@ -1,4 +1,7 @@
 <section class="view-content">
+    {{#if responseMessage}}
+        <div class="success">{{responseMessage}}</div>
+    {{/if}}
     <table>
         <tr>
             <th>Numéro</th>
@@ -7,8 +10,9 @@
             <th>Actions</th>
         </tr>
         {{#each model as |bill|}}
+
         <tr>
-            <td>{{bill.name}}</td>
+            <td>{{bill.number}}</td>
             <td>{{bill.client.name}}</td>
             <td>{{moment-format bill.createdat 'DD/MM/YYYY'}}</td>
             <td><button>Détails</button><button>Editer</button></td>

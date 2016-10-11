@@ -127,13 +127,13 @@ for(let i = 0;i < maxInputs;i++){
             },{
                 "name" : faker.commerce.product(),
                 "description" : faker.commerce.productName(),
-                "pricetype": "Pièce",
+                "pricetype": "Forfait",
                 "price" : parseFloat(faker.commerce.price()),
                 "vat": 21
             },{
                 "name" : faker.commerce.product(),
                 "description" : faker.commerce.productName(),
-                "pricetype": "Pièce",
+                "pricetype": "Libre",
                 "price" : parseFloat(faker.commerce.price()),
                 "vat": 0
             }

@@ -48,7 +48,13 @@
                     <label for="article-description" class="article-description">Description</label>
                     <label for="article-quantity" class="article-quantity">Qté</label>
                     <label for="article-pricetype" class="article-pricetype">Type</label>
-                    <label for="article-price" class="article-price">P/U</label>
+                    <label for="article-price" class="article-price">
+                        {{#if isPriceDisable}}
+                            P/U
+                        {{else}}
+                            Prix
+                        {{/if}}
+                    </label>
                     <label for="article-amount" class="article-amount">Montant HTVA</label>
                     <label for="article-vat" class="article-vat">TVA</label>
                     <span>Action</span>
@@ -60,9 +66,9 @@
                         {{/each}}
                     {{/x-select}}
                     {{input type="text" id="article-description" class="article-description" value=newArticle.description disabled=true}}
-                    {{input type="number" id="article-quantity" class="article-quantity" value=newArticle.quantity key-up='calcNewAmount'}}
+                    {{input type="number" id="article-quantity" class="article-quantity" value=newArticle.quantity key-up='calcNewAmount' disabled=isQtyDisable}}
                     {{input type="text" id="article-pricetype" class="article-pricetype" value=newArticle.pricetype disabled=true}}
-                    {{input type="number" id="article-price" class="article-price" value=newArticle.price disabled=true}}
+                    {{input type="number" id="article-price" class="article-price" value=newArticle.price key-up='calcNewAmount' disabled=isPriceDisable}}
                     {{input type="number" id="article-amount" class="article-amount" value=newArticle.amount disabled=true}}
                     {{input type="text" id="article-vat" class="article-vat" value=newArticle.vat disabled=true}}
                     <button {{action 'addArticle' newArticle}}>Ajouter</button>
@@ -75,15 +81,15 @@
                     {{#if isShowForm}}
                         {{input type="text" class="article-name" value=writedArticle.name}}
                         {{input type="text" class="article-description" value=writedArticle.description}}
-                        {{input type="number" class="article-quantity" value=writedArticle.quantity key-up='calcWritedAmount'}}
-                        {{#x-select class="article-pricetype" value=writedArticle.pricetype}}
+                        {{input type="number" class="article-quantity" value=writedArticle.quantity key-up='calcWritedAmount' disabled=isWritedQtyDisable}}
+                        {{#x-select class="article-pricetype" value=writedArticle.pricetype action='typeSet'}}
                             {{#each params.types as |pricetype|}}
                                 {{#x-option value=pricetype}}{{pricetype}}{{/x-option}}
                             {{/each}}
                         {{/x-select}}
-                        {{input type="number" class="article-price" value=writedArticle.price key-up='calcWritedAmount'}}
+                        {{input type="number" class="article-price" value=writedArticle.price key-up='calcWritedAmount' disabled=isWritedPriceDisabled}}
                         {{input type="number" class="article-amount" value=writedArticle.amount disabled=true}}
-                        {{#x-select class="article-vat" value=writedArticle.vat}}
+                        {{#x-select class="article-vat" value=writedArticle.vat action='typeSet'}}
                             {{#each params.vatrate as |vat|}}
                                 {{#x-option value=vat}}{{vat}}{{/x-option}}
                             {{/each}}

@@ -70,6 +70,7 @@ exports.post = function(req, res) {
             return;
         }
         logger.log(data);
+        // get the company corresponding to the id added to the bill
         companyModel.findById(request.company,
             function(err, companyFromDb){
                 if(err) {
@@ -77,24 +78,24 @@ exports.post = function(req, res) {
                     res(Boom.badRequest(err.message));
                     return;
                 }
-                
+                // add the bill id to the company
                 companyFromDb.bills.push(newModel._id);
-                logger.log(companyFromDb);
-                // model.findByIdAndUpdate(request.company, companyFromDb,
-                //     function(err, data) {
-                //         if(err) {
-                //             logger.warn(err.message);
-                //             res(Boom.badRequest(err.message));
-                //             return;
-                //         }
-                //         let attributes = {
-                //             message: 'Document saved'
-                //         };
+                // update company with new value
+                companyModel.findByIdAndUpdate(request.company, companyFromDb,
+                    function(err, data) {
+                        if(err) {
+                            logger.warn(err.message);
+                            res(Boom.badRequest(err.message));
+                            return;
+                        }
+                        let attributes = {
+                            message: 'Document saved'
+                        };
                         
-                //         // use a custom function from the utils file to avoid redundancy
-                //         res(utils.formatJson(type, data._id, attributes));
-                //     }
-                // );
+                        // use a custom function from the utils file to avoid redundancy
+                        res(utils.formatJson(type, data._id, attributes));
+                    }
+                );
             }
         );
     });

@@ -61,6 +61,10 @@ export default Ember.Route.extend({
         
         controller.set('errorNewArticle', false);
 
+        // values that change in function of the type of the article
+        controller.set('isQtyDisable', false);
+        controller.set('isPriceDisable', true);
+
         // define new void article for the "create new article" part of the form
         controller.set('writedArticle', {});
     },
@@ -126,6 +130,15 @@ export default Ember.Route.extend({
 
         this.calculateTots();
     },
+    calcAmount(article){
+        let quantity = parseFloat(article.quantity);
+        let price = parseFloat(article.price);
+        let amount = quantity * price;
+        return amount;
+    },
+    checkDisabled(){
+
+    },
     actions : {
         changeNumber(){
             let billnumber = moment(this.controller.get('newBill.date')).format('YYYYMMDD');
@@ -141,6 +154,14 @@ export default Ember.Route.extend({
         },
         setArticle() {
             this.controller.set('newArticle.quantity', 1);
+            if(this.controller.get('newArticle.pricetype') === "Forfait" || this.controller.get('newArticle.pricetype') === "Libre"){
+                this.controller.set('isQtyDisable', true);
+                this.controller.set('isPriceDisable', false);
+                this.controller.set('newArticle.price', 0);
+            } else {
+                this.controller.set('isQtyDisable', false);
+                this.controller.set('isPriceDisable', true);
+            }
             this.controller.set('newArticle.amount', this.controller.get('newArticle.price'));
         },
         showForm(){
@@ -151,37 +172,32 @@ export default Ember.Route.extend({
                 this.controller.set('isShowForm', false);
             }
         },
+        typeSet(){
+            if(this.controller.get('writedArticle.pricetype') === "Forfait" || this.controller.get('writedArticle.pricetype') === "Libre"){
+                this.controller.set('writedArticle.quantity', 1);
+                this.controller.set('isWritedQtyDisable', true);
+                this.controller.set('isWritedPriceDisable', false);
+            } else {
+                this.controller.set('isWritedQtyDisable', false);
+                this.controller.set('isWritedPriceDisable', true);
+            }
+            this.controller.set('writedArticle.amount', this.controller.get('writedArticle.price'));
+        },
         // loaded when we change the quantity
         calcNewAmount(){
-            // get the numbers
-            let quantity = parseFloat(this.controller.get('newArticle.quantity'));
-            let price = parseFloat(this.controller.get('newArticle.price'));
-            if(this.controller.get('newArticle.quantity') === ""){
-                quantity = 0;
+            if(this.controller.get('newArticle.quantity') === undefined){
+                this.controller.set('newArticle.quantity', 1);
             }
-
-            // calculate
-            let amount = quantity * price;
-
-            //affect to the controller
-            this.controller.set('newArticle.amount', amount);
+            this.controller.set('newArticle.amount', this.calcAmount(this.controller.get('newArticle')));
         },
         calcWritedAmount(){
-            // get the numbers
-            let quantity = parseFloat(this.controller.get('writedArticle.quantity'));
-            let price = parseFloat(this.controller.get('writedArticle.price'));
-            if(this.controller.get('writedArticle.quantity') === ""){
-                quantity = 0;
+            if(this.controller.get('writedArticle.quantity') === undefined){
+                this.controller.set('writedArticle.quantity', 1);
             }
-            if(this.controller.get('writedArticle.price') === ""){
-                price = 0;
+            if(this.controller.get('writedArticle.price') === undefined){
+                this.controller.set('writedArticle.price', 0);
             }
-
-            // calculate
-            let amount = quantity * price;
-
-            //affect to the controller
-            this.controller.set('writedArticle.amount', amount);
+            this.controller.set('writedArticle.amount', this.calcAmount(this.controller.get('writedArticle')));
         },
         addArticle(article){
             this.newArticle(article, false);
@@ -252,6 +268,7 @@ export default Ember.Route.extend({
                 // add the new bill in bills collection
                 newBill.save()
                 .then((response) =>{
+                    this.transitionTo('bills', {queryParams: {responseMessage: 'Nouvelle facture crée !'}});
                     console.log(response);
                 }, (response) =>{
                     console.log(response);
@@ -259,6 +276,10 @@ export default Ember.Route.extend({
             }, (response)=>{
                 console.log(response);
             });
+        },
+        willTransition() {
+            // clean the model to delete informations when we leave the page without saving informations
+            this.controller.get('newBill').rollbackAttributes();
         }
     }
 });
