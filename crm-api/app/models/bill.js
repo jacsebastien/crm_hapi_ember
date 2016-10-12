@@ -2,6 +2,7 @@ import DS from 'ember-data';
 
 export default DS.Model.extend({
     link: DS.attr(),
+    iseditable: DS.attr(),
     number: DS.attr(),
     date: DS.attr(),
     client: DS.attr(),

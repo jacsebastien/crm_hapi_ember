@@ -146,6 +146,10 @@ let companyModel = function() {
     let Bill = Schema({
         // the link of the pdf when printed => if undefined we can edit the bill
         link: String,
+        iseditable: {
+            type: Boolean,
+            required: true
+        },
         number: {
             type: String,
             required : true
@@ -183,13 +187,19 @@ let companyModel = function() {
                 pricetype: String,
                 quantity: Number,
                 price: Number,
+                amount: Number,
                 vat: Number,
             }],
+            totxvat: Number,
             refund: Number,
             // %, €, ...
             refundtype: String,
+            utotxvat: Number,
+            vat: Number,
+            utotal: Number,
             // amount already payed by the client
-            advance: Number
+            advance: Number,
+            total: Number
 
             // all tots are auto calculated
         },

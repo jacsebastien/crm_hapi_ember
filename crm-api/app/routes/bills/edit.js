@@ -2,24 +2,23 @@ import Ember from 'ember';
 import moment from 'moment';
 
 export default Ember.Route.extend({
-    listArticles : [],
     // if we create new articles to add to the DB
     newArticles: [],
 
-    model() {
+    model(params) {
         return Ember.RSVP.hash({
             companies: this.store.findAll('company'),
-            // bill: this.store.createRecord('bill'),
+            bill: this.store.findRecord('bill', params.bill_id),
             clients: this.store.findAll('client'),
             params: this.store.findAll('param')
         });
     },
     setupController: function(controller, model) {
         this._super(controller, model);
+        let that = this;
 
-        this.controller.set('title', 'Nouvelle facture');
-        this.controller.set('buttonLabel', 'Créer');
-
+        this.controller.set('title', 'Editer une facture');
+        this.controller.set('buttonLabel', 'Enregistrer');
         // get the first company of the db
         this.controller.set('company', model.companies.objectAt(0));
         this.controller.set('clients', model.clients);
@@ -27,40 +26,22 @@ export default Ember.Route.extend({
         this.controller.set('params', model.params.objectAt(0));
 
         // this.controller.set('bill', model.bill);
-        this.controller.set('bill', {});
-        this.controller.set('bill.iseditable', true);
+        this.controller.set('bill', model.bill);
 
-        // Define the base values for the bill
-        // default date
-        let now = moment().format('YYYY-MM-DD');
-        this.controller.set('bill.date', now);
+        let tempDate = moment(this.controller.get('bill.date')).format('YYYY-MM-DD');
+        this.controller.set('bill.date', tempDate);
 
-        // auto-generated bill number
-        let billnumber = moment().format('YYYYMMDD');
-        let billIncrement = this.controller.get('company.bills').length;
-        billIncrement ++;
-        if(billIncrement < 10){
-            billIncrement = "00"+billIncrement;
-        } else if(billIncrement < 100){
-            billIncrement = "0"+billIncrement;
-        }
-        billnumber += "-"+billIncrement;
-        this.controller.set('bill.number', billnumber);
+        tempDate = moment(this.controller.get('bill.project.begin')).format('YYYY-MM-DD');
+        this.controller.set('bill.project.begin', tempDate);
 
-        // projet 
-        this.controller.set('bill.project', {});
+        tempDate = moment(this.controller.get('bill.project.end')).format('YYYY-MM-DD');
+        this.controller.set('bill.project.end', tempDate);
 
-        // articles
-        this.controller.set('bill.details', {});
-        this.controller.set('bill.details.totxvat', 0);
-        this.controller.set('bill.details.refund', 0);
-        this.controller.set('bill.details.utotxvat', 0);
-        this.controller.set('bill.details.vat', 0);
-        this.controller.set('bill.details.utotal', 0);
-        this.controller.set('bill.details.advance', 0);
-        this.controller.set('bill.details.total', 0);
+        console.log(this.controller.get('bill.details'));
+        this.controller.set('listArticles', this.controller.get('bill.details.articles'));
 
-        this.controller.set('listArticles', this.listArticles);
+        this.controller.set('bill.client', this.controller.get('bill.client._id'));
+
         this.controller.set('newArticles', this.newArticles);
         // value to show/hide the "create new article" part of the form
         this.controller.set('isShowForm', false);
@@ -147,7 +128,6 @@ export default Ember.Route.extend({
     },
     actions : {
         changeNumber(){
-            console.log(this.controller.get('bill.date'));
             let billnumber = moment(this.controller.get('bill.date')).format('YYYYMMDD');
             let billIncrement = this.controller.get('company.bills').length;
             billIncrement ++;
@@ -255,13 +235,13 @@ export default Ember.Route.extend({
         changeValues(){
             this.calculateTots();
         },
-        saveBill(newBill) {
+        saveBill(bill) {
             let that = this;
-            console.log(newBill);
-            // get the list of article to add to the newBill
-            newBill.details.articles =  this.controller.get('listArticles');
-            newBill.company =  this.controller.get('company.id');
-            // console.log(newBill);
+            console.log(bill);
+            // get the list of article to add to the bill
+            bill.details.articles =  this.controller.get('listArticles');
+            bill.company =  this.controller.get('company.id');
+            // console.log(bill);
 
             // get the list of articles to add to the companie's articles list 
             this.controller.get('newArticles').map(function(article){
@@ -272,7 +252,6 @@ export default Ember.Route.extend({
             this.controller.get('company').save()
             .then((response)=>{
                 console.log(response);
-                let bill = this.store.createRecord('bill', newBill);
                 // add the new bill in bills collection
                 bill.save()
                 .then((response) =>{

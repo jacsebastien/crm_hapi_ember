@@ -12,7 +12,7 @@ export default Ember.Route.extend({
     
     model(){
         // this.store.query('bills', {search: {"company": "id"}});
-        return this.store.findAll('bill');
+        return this.store.findAll('bill', { reload: true });
     },
     setupController(controller, model){
         this._super(controller, model);

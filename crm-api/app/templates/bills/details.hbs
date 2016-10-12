@@ -1,8 +1,6 @@
 <section class="view-content bill-details">
     <h2>Détails de la facture :</h2>
-    <div>
-        
-    </div>
+
     <h3>Vos références</h3>
     <ul>
         <li>N° de facture : {{model.number}}</li>
@@ -29,8 +27,8 @@
             <th>Qté</th>
             <th>Type</th>
             <th>Prix</th>
-            <th>Montant HTVA</th>
             <th>TVA</th>
+            <th>Montant HTVA</th>
         </tr>
         {{#each model.details.articles as |article|}}
             <tr>
@@ -38,65 +36,66 @@
                 <td>{{article.description}}</td>
                 <td>{{article.quantity}}</td>
                 <td>{{article.pricetype}}</td>
-                <td>{{article.price}}</td>
-                <td>{{article.amount}}</td>
+                <td>{{article.price}} {{devise}}</td>
                 <td>{{article.vat}}%</td>
+                {{!--use custom helper to format number with 2 decimals--}}
+                <td>{{format-float article.amount}} {{devise}}</td>
             </tr>
         {{/each}}
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                 Total hors taxes :
             </td>
-            <td colspan="2">
-                {{model.details.totxvat}}
+            <td>
+                {{format-float model.details.totxvat}} {{devise}}
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                 Ristourne :
             </td>
-            <td colspan="2">
-                {{model.details.refund}} {{model.details.refundtype}}
+            <td>
+                {{format-float model.details.refund}} {{model.details.refundtype}}
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                 Sous-Total hors taxes :
             </td>
-            <td colspan="2">
-                {{model.details.utotxvat}}
+            <td>
+                {{format-float model.details.utotxvat}} {{devise}}
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                 TVA :
             </td>
-            <td colspan="2">
-                {{model.details.vat}}
+            <td>
+                {{format-float model.details.vat}} {{devise}}
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                Total TTC :
             </td>
-            <td colspan="2">
-                {{model.details.utotal}}
+            <td>
+                {{format-float model.details.utotal}} {{devise}}
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                Acompte :
             </td>
-            <td colspan="2">
-                {{model.details.advance}}
+            <td> 
+                {{format-float model.details.advance}} {{devise}}
             </td>
         </tr>
-        <tr>
-            <td colspan="5">
+        <tr class="tots">
+            <td colspan="6">
                A payer :
             </td>
-            <td colspan="2">
-                {{model.details.total}}
+            <td>
+                {{format-float model.details.total}} {{devise}}
             </td>
         </tr>
     </table>
@@ -110,4 +109,7 @@
             {{model.note}}
         </li>
     </ul>
+    <div class="actions">
+        <button>Imprimer</button>
+    </div>
 </section>

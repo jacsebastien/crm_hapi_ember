@@ -1,6 +1,6 @@
 <section class="view-content">
-    <h2>Nouvelle Facture</h2>
-    <form {{action 'saveBill' newBill on="submit"}}>
+    <h2>{{title}}</h2>
+    <form {{action 'saveBill' bill on="submit"}}>
         {{#if error}}
             <span class="error">Merci de compléter tous les champs</span>
         {{/if}}
@@ -8,10 +8,10 @@
             <legend>Vos références</legend>
             <div>
                 <label for="number">N° de facture
-                    {{input type="text" id="number" value=newBill.number disabled=true}}
+                    {{input type="text" id="number" value=bill.number disabled=true}}
                 </label>
                 <label for="date">Date de facture *
-                    {{input type="date" id="date" value=newBill.date focus-out='changeNumber' key-up='changeNumber'}}
+                    {{input type="date" id="date" value=bill.date focus-out='changeNumber' key-up='changeNumber' placeholder="jj-mm-aaaa"}}
                 </label>
             </div>
         </fieldset>
@@ -19,7 +19,7 @@
         <fieldset class="references-cl">
             <legend>Références Client</legend>
             <label for="client">Client *</label><br>
-            {{#x-select id="client" value=newBill.client}}
+            {{#x-select id="client" value=bill.client}}
                 {{#each clients as |client|}}
                     {{#x-option value=client.id}}{{client.name}}{{/x-option}}
                 {{/each}}
@@ -30,15 +30,15 @@
             <legend>Objet</legend>
             <div>
                 <label for="project-name">Nom du projet *
-                    {{input type="text" id="project-name" value=newBill.project.name}}
+                    {{input type="text" id="project-name" value=bill.project.name}}
                 </label>
             </div>
             <div>
                 <label for="project-begin">Date de début *
-                    {{input type="date" id="project-begin" value=newBill.project.begin}}
+                    {{input type="date" id="project-begin" value=bill.project.begin placeholder="jj-mm-aaaa"}}
                 </label>
                 <label for="project-end">Date de fin *
-                    {{input type="date" id="project-end" value=newBill.project.end}}
+                    {{input type="date" id="project-end" value=bill.project.end placeholder="jj-mm-aaaa"}}
                 </label>
             </div>
         </fieldset>
@@ -120,12 +120,12 @@
             <div class="tots">
                 <div>
                     <label for="tots-totxvat">Total hors taxes
-                        {{input type="text" id="tots-totxvat" value=newBill.details.totxvat disabled=true}}
+                        {{input type="text" id="tots-totxvat" value=bill.details.totxvat disabled=true}}
                     </label>
 
                     <label for="tots-refund" class="tots-refund">Ristourne
-                        {{input type="text" id="tots-refund" value=newBill.details.refund key-up='changeValues'}}
-                        {{#x-select id="tots-refundtype" value=newBill.details.refundtype action='changeValues'}}
+                        {{input type="text" id="tots-refund" value=bill.details.refund key-up='changeValues'}}
+                        {{#x-select id="tots-refundtype" value=bill.details.refundtype action='changeValues'}}
                             {{#each params.refunds as |refund|}}
                                 {{#x-option value=refund}}{{refund}}{{/x-option}}
                             {{/each}}
@@ -133,20 +133,20 @@
                     </label>
                     
                     <label for="tots-utotxvat">Sous-Total hors taxes
-                        {{input type="text" id="tots-utotxvat" value=newBill.details.utotxvat disabled=true}}
+                        {{input type="text" id="tots-utotxvat" value=bill.details.utotxvat disabled=true}}
                     </label>
                     
                     <label for="tots-vat">TVA
-                        {{input type="text" id="tots-vat" value=newBill.details.vat disabled=true}}
+                        {{input type="text" id="tots-vat" value=bill.details.vat disabled=true}}
                     </label>
                     <label for="tots-utotal" class="tots-utotal">Total TTC
-                        {{input type="text" id="tots-utotal" value=newBill.details.utotal disabled=true}}
+                        {{input type="text" id="tots-utotal" value=bill.details.utotal disabled=true}}
                     </label>
                     <label for="tots-advance">Acompte
-                        {{input type="text" id="tots-advance" value=newBill.details.advance key-up='changeValues'}}
+                        {{input type="text" id="tots-advance" value=bill.details.advance key-up='changeValues'}}
                     </label>
                     <label for="tots-total" class="tots-total">A payer
-                        {{input type="text" id="tots-total" value=newBill.details.total disabled=true}}
+                        {{input type="text" id="tots-total" value=bill.details.total disabled=true}}
                     </label>
                 </div>
             </div>
@@ -156,39 +156,42 @@
             <legend>Informations et règles de paiement</legend>
             <div>
                 <label for="deadline">Echéance *</label><br>
-                {{#x-select id="deadline" value=newBill.deadline}}
+                {{#x-select id="deadline" value=bill.deadline}}
                     {{#each params.rules as |rule|}}
                         {{#x-option value=rule}}{{rule}}{{/x-option}}
                     {{/each}}
                 {{/x-select}}
                 
                 <label for="primaccount">Mode de paiement principal *</label><br>
-                {{#x-select id="primaccount" value=newBill.primaccount}}
+                {{#x-select id="primaccount" value=bill.primaccount}}
                     {{#each company.paymentinfo.bank as |bank|}}
-                        {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
+                        {{#x-option value=bank}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
                     {{/each}}
                     {{#each company.paymentinfo.paypal as |paypal|}}
-                        {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
+                        {{#x-option value=paypal}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
                     {{/each}}
                 {{/x-select}}
                     
                 <label for="secaccount">Mode de paiement secondaire</label><br>
-                {{#x-select id="secaccount" value=newBill.secaccount}}
+                {{#x-select id="secaccount" value=bill.secaccount}}
+                    {{#if bill.secaccount}}
+                    {{else}}
                     {{#x-option value=""}}Aucun{{/x-option}}
+                    {{/if}}
                     {{#each company.paymentinfo.bank as |bank|}}
-                        {{#x-option value=bank.name}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
+                        {{#x-option value=bank}}{{bank.name}} - IBAN: {{bank.iban}}{{/x-option}}
                     {{/each}}
                     {{#each company.paymentinfo.paypal as |paypal|}}
-                        {{#x-option value=paypal.name}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
+                        {{#x-option value=paypal}}{{paypal.name}} - MAIL: {{paypal.mail}}{{/x-option}}
                     {{/each}}
                 {{/x-select}}
 
                 <label for="note">Notes</label><br>
-                {{textarea id="note" value=newBill.note cols="100" rows="6"}}
+                {{textarea id="note" value=bill.note cols="100" rows="6"}}
             </div>
         </fieldset>
         
-        {{input type="submit" value="Créer"}}
+        {{input type="submit" value=buttonLabel}}
         
     </form>
 </section>

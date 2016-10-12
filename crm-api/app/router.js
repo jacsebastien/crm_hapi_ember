@@ -13,6 +13,7 @@ Router.map(function() {
   this.route('bills', function() {
     this.route('new');
     this.route('details', {path: 'details/:bill_id'});
+    this.route('edit', {path: 'edit/:bill_id'});
   });
   this.route('account');
 });

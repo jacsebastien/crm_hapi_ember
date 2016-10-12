@@ -15,7 +15,14 @@
             <td>{{bill.number}}</td>
             <td>{{bill.client.name}}</td>
             <td>{{moment-format bill.createdat 'DD/MM/YYYY'}}</td>
-            <td>{{#link-to 'bills.details' bill.id tagName="button"}}Détails{{/link-to}}<button>Editer</button></td>
+            <td>
+                {{#link-to 'bills.details' bill.id tagName="button"}}Détails{{/link-to}}
+                {{#if bill.iseditable}}
+                    {{#link-to 'bills.edit' bill.id tagName="button"}}Editer{{/link-to}}
+                {{else}}
+                    <button>Note de crédit</button>
+                {{/if}}
+            </td>
         </tr>
         {{/each}}
     </table>
