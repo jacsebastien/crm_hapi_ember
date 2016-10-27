@@ -1,8 +1,8 @@
 'use strict';
 
 require('colors');
-const config = require('../config/config');
-const _ = require('lodash');
+const config    = require('../config/config');
+const _         = require('lodash');
 
 let noop = function() {};
 

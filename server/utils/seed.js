@@ -1,13 +1,14 @@
-let faker = require('faker');
-let _ = require('lodash');
-// let bcrypt = require('bcrypt');
+let faker   = require('faker');
+let _       = require('lodash');
+let Model   = require('../api/crm/model');
+let logger  = require('./logger');
+let bcrypt  = require('bcrypt');
 
-let Model = require('../api/crm/model');
-let logger = require('./logger');
+const saltRounds = 10;
 
-// const saltRounds = 10;
-
-const maxInputs = 10;
+const max_companies = 2;
+const max_clients = 20;
+const clients_in_company = 5;
 
 let companies = [];
 let clients = [];
@@ -48,15 +49,22 @@ let params = [{
     ]
 }];
 
-for(let i = 0;i < maxInputs;i++){
+// logs to connect to the api from front end
+let emails = ["sja@triptyk.eu", "john@doe.com"];
+let pass = "pass123";
+
+for(let i = 0;i < max_companies;i++){
+    let randomNum = Math.floor((Math.random() * params[0].vatprefix.length-1) + 1);
+
     let randomCompany = {
         "name" : faker.company.companyName(),
         "login": {
-            "email": faker.internet.email(),
-            "pwd" : faker.internet.password()
+            "email": emails[i],
+            "pwd" : bcrypt.hashSync(pass, saltRounds)
         },
         "vat" : {
-            "num" : `${faker.address.countryCode()} ${faker.random.number(9999)}.${faker.random.number(999)}.${faker.random.number(999)}`,
+            "prefix" : params[0].vatprefix[randomNum],
+            "num" : `${faker.random.number(9999)}.${faker.random.number(999)}.${faker.random.number(999)}`,
             "siren" : "",
             "rcs" : ""
         },
@@ -67,8 +75,8 @@ for(let i = 0;i < maxInputs;i++){
             "box" : "",
             "zip" : faker.address.zipCode(),
             "town" : faker.address.city(),
-            "country" : faker.address.country(),
-            "mail" : faker.internet.email(),
+            "country" : params[0].countries[randomNum],
+            "mail" : faker.internet.email().toLowerCase(),
             "phonemain" : faker.phone.phoneNumber(),
             "phonesec" : faker.phone.phoneNumber(),
             "fax" : faker.phone.phoneNumber(),
@@ -79,7 +87,7 @@ for(let i = 0;i < maxInputs;i++){
             "firstname" : faker.name.firstName(),
             "lastname" : faker.name.lastName(),
             "post" : faker.name.jobTitle(),
-            "mail" : faker.internet.email(),
+            "mail" : faker.internet.email().toLowerCase(),
             "phonemain" : faker.phone.phoneNumber(),
             "phonesec" : faker.phone.phoneNumber()
         },
@@ -98,7 +106,7 @@ for(let i = 0;i < maxInputs;i++){
             "paypal" : [
                 {
                     "name": "Paypal Account",
-                    "mail": faker.internet.email()
+                    "mail": faker.internet.email().toLowerCase()
                 }
             ]
         },
@@ -142,12 +150,17 @@ for(let i = 0;i < maxInputs;i++){
     };
 
     companies.push(randomCompany);
+}
+
+for(let i = 0;i < max_clients;i++){
+    randomNum = Math.floor((Math.random() * params[0].vatprefix.length-1) + 1);
 
     let randomClient = {
         "name" : faker.name.findName(),
         "iscompany" : faker.random.boolean(),
         "vat" : {
-            "num" : `${faker.address.countryCode()} ${faker.random.number(9999)}.${faker.random.number(999)}.${faker.random.number(999)}`,
+            "prefix" : params[0].vatprefix[randomNum],
+            "num" : `${faker.random.number(9999)}.${faker.random.number(999)}.${faker.random.number(999)}`,
             "siren" : "",
             "rcs" : ""
         },
@@ -160,8 +173,8 @@ for(let i = 0;i < maxInputs;i++){
             "box" : "",
             "zip" : faker.address.zipCode(),
             "town" : faker.address.city(),
-            "country" : faker.address.country(),
-            "mail" : faker.internet.email(),
+            "country" : params[0].countries[randomNum],
+            "mail" : faker.internet.email().toLowerCase(),
             "phonemain" : faker.phone.phoneNumber(),
             "phonesec" : faker.phone.phoneNumber(),
             "fax" : faker.phone.phoneNumber()
@@ -176,16 +189,16 @@ for(let i = 0;i < maxInputs;i++){
             "box" : "",
             "zip" : faker.address.zipCode(),
             "town" : faker.address.city(),
-            "country" : faker.address.country()
+            "country" : params[0].countries[randomNum]
         }, 
         "contactperson" : {
             "civility" : faker.name.prefix(),
             "firstname" : faker.name.firstName(),
             "lastname" : faker.name.lastName(),
             "post" : faker.name.jobTitle(),
-            "mail" : faker.internet.email(),
-            "phoneMain" : faker.phone.phoneNumber(),
-            "phoneSec" : faker.phone.phoneNumber(),
+            "mail" : faker.internet.email().toLowerCase(),
+            "phonemain" : faker.phone.phoneNumber(),
+            "phonesec" : faker.phone.phoneNumber(),
         },
         "picture" : "",
         "memo" : faker.lorem.sentence(),
@@ -221,7 +234,26 @@ let createCompanies = function(data) {
     logger.log("- SEED : Creating Companies");
 
     let promises = companies.map(function(company) {
-        return createDoc(Model, company);
+        // return createDoc(Model, company);
+
+        let addClientsPromise = new Promise(function(resolve, reject) {
+            return Model.Client.find()
+            .then(function(docs){
+                // logger.log(docs);
+                for(let i=0; i< clients_in_company; i++){
+                    let random = Math.floor((Math.random() * docs.length-1) + 1);
+                    // avoid multiple instances of the same client for one company
+                    while(company.clients.indexOf(docs[random]._id) !== -1){
+                        random = Math.floor((Math.random() * docs.length-1) + 1);
+                    }
+                    // logger.log(docs[random]._id);
+                    company.clients.push(docs[random]._id);
+                }
+                return createDoc(Model, company);
+            });
+        });
+        
+        return Promise.all(addClientsPromise);
     });
 
     return Promise.all(promises)

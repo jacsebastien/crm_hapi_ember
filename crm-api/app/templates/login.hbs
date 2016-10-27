@@ -1,0 +1,16 @@
+<section class="login">
+    <form {{action 'authenticate' on='submit'}}>
+        <label>Login
+            {{input type="text" placeholder='john@doe.com' value=email}}
+        </label>
+        <label>Password
+            {{input type='password' value=pwd}}
+        </label>
+
+        {{input type="submit" value="Se connecter"}}
+
+        {{#if isInvalid}}
+            <div class="form-error">Login ou mot de passe incorrecte</div>
+        {{/if}}
+    </form>
+</section>

@@ -1,5 +1,12 @@
 <header class="main-header">
     <div class="wrapper">
-        {{#link-to 'index'}}CRM API{{/link-to}}
+        {{#link-to 'index' class="header-title"}}CRM API{{/link-to}}
+        <div class="header-links">
+            {{#if session.isAuthenticated}}
+                <a href="" {{action 'invalidateSession'}}>Logout</a>
+            {{else}}
+                {{#link-to 'login'}}Login{{/link-to}}
+            {{/if}}
+        </div>
     </div>
 </header>

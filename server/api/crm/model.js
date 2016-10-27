@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-let mongoose = require('mongoose');
-let Schema = mongoose.Schema;
-let logger = require(`${process.cwd()}/utils/logger`);
+let mongoose    = require('mongoose');
+let Schema      = mongoose.Schema;
+let logger      = require(`${process.cwd()}/utils/logger`);
 // let validate = require('mongoose-validator');
 
 // place for validators
@@ -28,6 +28,10 @@ let companyModel = function() {
             }
         },
         vat : {
+            prefix : {
+                type : String,
+                required : true
+            },
             num : {
                 type : String,
                 required : true
@@ -144,12 +148,16 @@ let companyModel = function() {
     });
 
     let Bill = Schema({
-        // the link of the pdf when printed => if undefined we can edit the bill
         link: String,
         iseditable: {
             type: Boolean,
             required: true
         },
+        iscredit: {
+            type: Boolean,
+            required: true
+        },
+        iscredited: Boolean,
         number: {
             type: String,
             required : true
@@ -158,6 +166,7 @@ let companyModel = function() {
             type: Date,
             required : true
         },
+        creditdate: Date,
         client: {
             type: Schema.Types.ObjectId,
             ref: 'client'
@@ -199,9 +208,9 @@ let companyModel = function() {
             utotal: Number,
             // amount already payed by the client
             advance: Number,
-            total: Number
-
-            // all tots are auto calculated
+            total: Number,
+            credit: Number,
+            totcredit: Number
         },
         deadline: {
             type: String,
@@ -213,10 +222,13 @@ let companyModel = function() {
 
         note: String,
         payedat : Date,
-        createdat : Date,
-        updatedat: {
-            type: Date,
-            default: Date.now
+        createdat : {
+            type : Date,
+            required : true
+        },
+        updatedat : {
+            type : Date,
+            default : Date.now
         }
     });
 
@@ -230,6 +242,7 @@ let companyModel = function() {
             required : true
         },
         vat : {
+            prefix : String,
             num : String,
             siren : String,
             rcs : String
@@ -315,11 +328,11 @@ let companyModel = function() {
                 type : String,
                 required : true
             },
-            phoneMain : {
+            phonemain : {
                 type : String,
                 required : true
             },
-            phoneSec : String,
+            phonesec : String,
         },
         bills: [{
             type: Schema.Types.ObjectId,

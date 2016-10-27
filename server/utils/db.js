@@ -1,7 +1,7 @@
 'use strict';
 
-let mongoose = require('mongoose');
-let logger = require(`${process.cwd()}/utils/logger`);
+let mongoose    = require('mongoose');
+let logger      = require(`${process.cwd()}/utils/logger`);
 
 let db = function() {
     return {

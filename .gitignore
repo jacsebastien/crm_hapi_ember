@@ -35,3 +35,21 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# Ember ignore
+# compiled output
+crm-api/dist
+crm-api/tmp
+
+# dependencies
+crm-api/node_modules
+crm-api/bower_components
+
+# misc
+crm-api/.sass-cache
+crm-api/connect.lock
+crm-api/coverage/*
+crm-api/libpeerconnection.log
+npm-debug.log
+testem.log
+

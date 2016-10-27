@@ -2,15 +2,11 @@ import Ember from 'ember';
 import moment from 'moment';
 
 export default Ember.Route.extend({
-    listArticles : [],
-    // if we create new articles to add to the DB
-    newArticles: [],
-
+    session: Ember.inject.service('session'),
     model() {
+        let that = this;
         return Ember.RSVP.hash({
-            companies: this.store.findAll('company'),
-            // bill: this.store.createRecord('bill'),
-            clients: this.store.findAll('client'),
+            company : this.store.findRecord('company', that.get('session.accountId'), { reload: true }),
             params: this.store.findAll('param')
         });
     },
@@ -19,16 +15,20 @@ export default Ember.Route.extend({
 
         this.controller.set('title', 'Nouvelle facture');
         this.controller.set('buttonLabel', 'Créer');
+        this.controller.set('devise', "€");
+        this.controller.set('theRoute', this);
 
         // get the first company of the db
-        this.controller.set('company', model.companies.objectAt(0));
-        this.controller.set('clients', model.clients);
+        this.controller.set('company', model.company);
+        // this.controller.set('clients', this.controller.get('company.clients'));
         // we have only one object in the params collection so get the first object of the array
         this.controller.set('params', model.params.objectAt(0));
 
         // this.controller.set('bill', model.bill);
         this.controller.set('bill', {});
+        this.controller.set('bill.company', this.get('session.accountId'));
         this.controller.set('bill.iseditable', true);
+        this.controller.set('bill.iscredit', false);
 
         // Define the base values for the bill
         // default date
@@ -37,14 +37,25 @@ export default Ember.Route.extend({
 
         // auto-generated bill number
         let billnumber = moment().format('YYYYMMDD');
-        let billIncrement = this.controller.get('company.bills').length;
+        let bills = this.controller.get('company.bills');
+
+        let billIncrement = 0;        
+        bills.map(function(bill){
+            if(!bill.iscredit){
+                billIncrement ++;
+            }
+        });
         billIncrement ++;
         if(billIncrement < 10){
             billIncrement = "00"+billIncrement;
         } else if(billIncrement < 100){
             billIncrement = "0"+billIncrement;
         }
+        // this.controller.set('bill.number', billIncrement);
+
         billnumber += "-"+billIncrement;
+        this.controller.set('billIncrement', billIncrement);
+
         this.controller.set('bill.number', billnumber);
 
         // projet 
@@ -60,13 +71,24 @@ export default Ember.Route.extend({
         this.controller.set('bill.details.advance', 0);
         this.controller.set('bill.details.total', 0);
 
-        this.controller.set('listArticles', this.listArticles);
-        this.controller.set('newArticles', this.newArticles);
+        let listAccounts = [];
+        this.controller.get('company.paymentinfo.bank').map(function(bank){
+            listAccounts.push(bank);
+        });
+        this.controller.get('company.paymentinfo.paypal').map(function(paypal){
+            listAccounts.push(paypal);
+        });
+        
+        this.controller.set('listAccounts', listAccounts);
+
+        this.controller.set('listArticles', []);
+        this.controller.set('newArticles', []);
         // value to show/hide the "create new article" part of the form
         this.controller.set('isShowForm', false);
         
         this.controller.set('errorNewArticle', false);
         this.controller.set('error', false);
+        this.controller.set('errorAccount', false);
 
         // values that change in function of the type of the article
         this.controller.set('isQtyDisable', false);
@@ -83,6 +105,10 @@ export default Ember.Route.extend({
         let totalxvat = parseFloat(this.get('controller').get('bill.details.totxvat'));
         let refund = parseFloat(this.get('controller').get('bill.details.refund'));
         let utotxvat = parseFloat(this.get('controller').get('bill.details.utotxvat'));
+        // console.log(refund);
+        if(isNaN(refund)){
+            refund = 0;
+        }
         if(this.get('controller').get('bill.details.refundtype') === "%"){
             refund = (totalxvat / 100) * refund;
         }
@@ -98,6 +124,9 @@ export default Ember.Route.extend({
         // CALCULATE TOTAL
         let advance = parseFloat(this.get('controller').get('bill.details.advance'));
         let total = parseFloat(this.get('controller').get('bill.details.total'));
+        if(isNaN(advance)){
+            advance = 0;
+        }
         total = utotal - advance;
         this.get('controller').set('bill.details.total', total.toFixed(2));
     },
@@ -146,18 +175,19 @@ export default Ember.Route.extend({
         return amount.toFixed(2);
     },
     actions : {
-        changeNumber(){
-            console.log(this.controller.get('bill.date'));
-            let billnumber = moment(this.controller.get('bill.date')).format('YYYYMMDD');
-            let billIncrement = this.controller.get('company.bills').length;
-            billIncrement ++;
-            if(billIncrement < 10){
-                billIncrement = "00"+billIncrement;
-            } else if(billIncrement < 100){
-                billIncrement = "0"+billIncrement;
-            }
-            billnumber += "-"+billIncrement;
+        changeNumber(value){
+            // console.log(value);
+            this.controller.set('bill.date', value);
+            let billnumber = moment(value).format('YYYYMMDD');
+            // let billIncrement = this.controller.get('company.bills').length;
+            billnumber += "-"+this.controller.get('billIncrement');
             this.controller.set('bill.number', billnumber);
+        },
+        pickBeginDate(value){
+            this.controller.set('bill.project.begin', value);
+        },
+        pickEndDate(value){
+            this.controller.set('bill.project.end', value);
         },
         setArticle() {
             this.controller.set('newArticle.quantity', 1);
@@ -183,10 +213,8 @@ export default Ember.Route.extend({
             if(this.controller.get('writedArticle.pricetype') === "Forfait" || this.controller.get('writedArticle.pricetype') === "Libre"){
                 this.controller.set('writedArticle.quantity', 1);
                 this.controller.set('isWritedQtyDisable', true);
-                this.controller.set('isWritedPriceDisable', false);
             } else {
                 this.controller.set('isWritedQtyDisable', false);
-                this.controller.set('isWritedPriceDisable', true);
             }
             this.controller.set('writedArticle.amount', this.controller.get('writedArticle.price')*this.controller.get('writedArticle.quantity'));
             // console.log(this.controller.get('writedArticle'));
@@ -213,7 +241,7 @@ export default Ember.Route.extend({
         createArticle(article){
             // console.log(article);
             if(article.name === undefined || article.description === undefined || article.quantity === undefined || article.price === undefined){
-                this.controller.set('errorNewArticle', true);
+                this.controller.set('errorNewArticle', "Vous devez compléter tous les champs");
             } else {
                 this.controller.set('errorNewArticle', false);
                 // Trick to avoid undefined value when we don't change the value of the dropdown
@@ -256,49 +284,82 @@ export default Ember.Route.extend({
             this.calculateTots();
         },
         saveBill(newBill) {
-            let that = this;
-            console.log(newBill);
-            // get the list of article to add to the newBill
-            newBill.details.articles =  this.controller.get('listArticles');
-            newBill.company =  this.controller.get('company.id');
             // console.log(newBill);
+            let that = this;
+            this.controller.set('error', false);
 
-            // get the list of articles to add to the companie's articles list 
-            this.controller.get('newArticles').map(function(article){
-                that.controller.get('company.articles').pushObject(article);
-            });
+            if(moment(newBill.date).isAfter(newBill.project.begin)){
+                this.controller.set('errorDate', "La date du projet doit être ultérieure à celle de la facture");
+                this.controller.set('error', true);
+                window.scrollTo(0,0);
+            } else {
+                this.controller.set('errorDate', false);
+            }
+
+            if(moment(newBill.project.begin).isAfter(newBill.project.end)){
+                this.controller.set('errorProjectDate', "La date de fin doit être ultérieure à celle de début ");
+                this.controller.set('error', true);
+                window.scrollTo(0,0);
+            } else {
+                this.controller.set('errorProjectDate', false);
+            }
+
+            if(!newBill.primaccount){
+                this.controller.set('errorAccount', "Vous devez sélectionner un compte principal");
+                this.controller.set('error', true);
+                window.scrollTo(0,0);
+            } else {
+                this.controller.set('errorAccount', false);
+            }
+
+            if(this.controller.get('listArticles').length === 0){
+                this.controller.set('errorListArticles', "Vous devez ajouter au moins un article à votre facture");
+                this.controller.set('error', true);
+                window.scrollTo(0,0);
+            } else {
+                this.controller.set('errorListArticles', false);
+            }
             
-            // add new articles to articles list of company
-            this.controller.get('company').save()
-            .then((response)=>{
-                console.log(response);
-                let bill = this.store.createRecord('bill', newBill);
-                // add the new bill in bills collection
-                bill.save()
-                .then((response) =>{
-                    console.log(response);                    
-                    this.transitionTo('bills', {queryParams: {responseMessage: 'Nouvelle facture crée !'}});
+            if(!this.controller.get('error')) {
+                let refund = parseFloat(newBill.get('details.refund'));
+                if(isNaN(refund)){
+                    newBill.set('details.refund', 0);
+                }
+                // get the list of article to add to the newBill
+                newBill.details.articles =  this.controller.get('listArticles');
+                newBill.createdat = Date.now();
+                // get the list of articles to add to the companie's articles list 
+                this.controller.get('newArticles').map(function(article){
+                    that.controller.get('company.articles').pushObject(article);
+                });
+                // add new articles to articles list of company
+                this.controller.get('company').save()
+                .then(()=>{
+                    // console.log(response);
+                    let bill = this.store.createRecord('bill', newBill);
+                    // add the new bill in bills collection
+                    bill.save()
+                    .then(() =>{
+                        // console.log(response);                    
+                        this.transitionTo('bills', {queryParams: {responseMessage: 'Nouvelle facture créée !'}});
+                    })
+                    .catch((response)=>{
+                        bill.rollbackAttributes();
+                        // console.log(response);
+                        if(response.errors[0].status === 400){
+                            that.controller.set('error', true);
+                            window.scrollTo(0,0);
+                        }
+                    });
                 })
                 .catch((response)=>{
-                    bill.rollbackAttributes();
-                    console.log(response);
+                    // console.log(response);
                     if(response.errors[0].status === 400){
                         that.controller.set('error', true);
                         window.scrollTo(0,0);
                     }
                 });
-            })
-            .catch((response)=>{
-                console.log(response);
-                if(response.errors[0].status === 400){
-                    that.controller.set('error', true);
-                    window.scrollTo(0,0);
-                }
-            });
-        },
-        // willTransition() {
-        //     // clean the to delete informations when we leave the page without saving informations
-        //     this.controller.get('bill').rollbackAttributes();
-        // }
+            }
+        }
     }
 });

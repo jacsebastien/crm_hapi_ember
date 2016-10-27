@@ -2,28 +2,5 @@
     {{#if responseMessage}}
         <div class="success">{{responseMessage}}</div>
     {{/if}}
-    <table>
-        <tr>
-            <th>Numéro</th>
-            <th>Client</th>
-            <th>Date</th>
-            <th>Actions</th>
-        </tr>
-        {{#each model as |bill|}}
-
-        <tr>
-            <td>{{bill.number}}</td>
-            <td>{{bill.client.name}}</td>
-            <td>{{moment-format bill.createdat 'DD/MM/YYYY'}}</td>
-            <td>
-                {{#link-to 'bills.details' bill.id tagName="button"}}Détails{{/link-to}}
-                {{#if bill.iseditable}}
-                    {{#link-to 'bills.edit' bill.id tagName="button"}}Editer{{/link-to}}
-                {{else}}
-                    <button>Note de crédit</button>
-                {{/if}}
-            </td>
-        </tr>
-        {{/each}}
-    </table>
+    {{bills-list bills=model removeBill="removeBill"}}
 </section>

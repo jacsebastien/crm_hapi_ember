@@ -11,5 +11,6 @@ export default DS.Model.extend({
     picture : DS.attr(),
     memo : DS.attr(),
     createdat : DS.attr(),
-    updatedat : DS.attr()
+    updatedat : DS.attr(),
+    company: DS.attr()
 });

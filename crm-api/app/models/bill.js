@@ -1,19 +1,25 @@
-import DS from 'ember-data';
+import Model from 'ember-data/model';
+import attr from 'ember-data/attr';
 
-export default DS.Model.extend({
-    link: DS.attr(),
-    iseditable: DS.attr(),
-    number: DS.attr(),
-    date: DS.attr(),
-    client: DS.attr(),
-    company: DS.attr(),
-    project: DS.attr(),
-    details: DS.attr(),
-    deadline: DS.attr(),
-    primaccount: DS.attr(),
-    secaccount: DS.attr(),
-    note: DS.attr(),
-    payedat : DS.attr(),
-    createdat : DS.attr(),
-    updatedat: DS.attr()
+
+export default Model.extend({
+    '_id': attr(),
+    'link': attr(),
+    'iseditable': attr(),
+    'iscredit': attr(),
+    'iscredited': attr(),
+    'number': attr(),
+    'date': attr(),
+    'creditdate': attr(),
+    'client': attr(),
+    'company': attr(),
+    'project': attr(),
+    'details': attr(),
+    'deadline': attr(),
+    'primaccount': attr(),
+    'secaccount': attr(),
+    'note': attr(),
+    'payedat' : attr(),
+    'createdat' : attr(),
+    'updatedat': attr()
 });

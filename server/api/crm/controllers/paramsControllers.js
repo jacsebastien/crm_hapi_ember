@@ -1,16 +1,15 @@
 "use strict";
 
-let logger = require(`${process.cwd()}/utils/logger`);
-let utils = require(`${process.cwd()}/utils/utils`)
-let model = require('../model');
+let logger  = require(`${process.cwd()}/utils/logger`);
+let utils   = require(`${process.cwd()}/utils/utils`);
+let Boom    = require('boom');
+let model   = require('../model');
 model = model.Param;
-
-let Boom = require('boom');
 
 let type = 'param';
 
 exports.get = function(req, res) {
-    logger.log("-- GET Ctrl");
+    logger.log("-- GET Params Ctrl");
 
     model.find()
     .then(function(docs){
@@ -23,13 +22,13 @@ exports.get = function(req, res) {
             };
             documents.push(document);
         });
-        logger.log({data: documents});
+        logger.log("Send params to view");
         res({data: documents});
     });
 };
 
 exports.getOne = function(req, res) {
-    logger.log("-- GET ONE Ctrl");
+    logger.log("-- GET ONE Param Ctrl");
 
     model.findById(req.params.id,
         function(err, documentFromDb){
@@ -38,14 +37,14 @@ exports.getOne = function(req, res) {
                 res(Boom.badRequest(err.message));
                 return;
             }
-            logger.log(documentFromDb);
+            logger.log("Send param to view");
             res(utils.formatJson(type, documentFromDb._id, documentFromDb));
         }
     );
 };
 
 exports.post = function(req, res) {
-    logger.log("-- POST Ctrl");
+    logger.log("-- POST Param Ctrl");
 
     let request = {};
     if(req.payload.data)
@@ -61,14 +60,14 @@ exports.post = function(req, res) {
         let attributes = {
             message: 'Document saved'
         };
-        logger.log(data);
+        logger.log(attributes);
         // use a custom function from the utils file to avoid redundancy
         res(utils.formatJson(type, data._id, attributes));
     });
 };
 
 exports.update = function(req, res) {
-    logger.log("-- UPDATE Ctrl");
+    logger.log("-- UPDATE Param Ctrl");
 
     let request = {};
     if(req.payload.data)
@@ -89,14 +88,14 @@ exports.update = function(req, res) {
             let attributes = {
                 message: 'Document updated'
             };
-            logger.log(data);
+            logger.log(attributes);
             res(utils.formatJson(type, data._id, attributes));
         }
     );
 };
 
 exports.remove = function(req, res) {
-    logger.log("-- REMOVE Ctrl");
+    logger.log("-- REMOVE Param Ctrl");
     
     model.findByIdAndRemove(req.params.id, 
         function(err, data) {
@@ -108,7 +107,7 @@ exports.remove = function(req, res) {
             let attributes = {
                 message: 'Document deleted'
             };
-            logger.log(data);
+            logger.log(attributes);
             res(utils.formatJson(type, data._id, attributes));
         }
     );

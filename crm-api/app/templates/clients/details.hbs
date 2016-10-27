@@ -1,0 +1,94 @@
+<section class="view-content vew-details">
+    <h2>Informations sur le client :</h2>
+
+    <h3>Type de client</h3>
+    <ul>
+        <li>{{#if model.iscompany}}
+                Société
+            {{else}}
+                Particulier
+            {{/if}}
+        </li>
+        <li>
+            {{#if model.iscompany}}
+                Dénomination sociale : 
+            {{else}}
+                Nom de référence : 
+            {{/if}}
+            {{model.name}}
+        </li>
+    </ul>
+
+    {{#if model.iscompany}}
+    <h3>TVA</h3>
+    <ul>
+        <li>N° de TVA : {{model.vat.prefix}} {{model.vat.num}}</li>
+        <li>N° SIREN : {{model.vat.siren}}</li>
+        <li>N° RCS : {{model.vat.rcs}}</li>
+    </ul>
+    {{/if}}
+
+    <h3>Personne de contact</h3>
+    <ul>
+        <li>Civilité : {{model.contactperson.civility}}</li>
+        <li>Nom : {{model.contactperson.lastname}}</li>
+        <li>Prénom : {{model.contactperson.firstname}}</li>
+        {{#if model.iscompany}}
+        <li>Fonction : {{model.contactperson.post}}</li>
+        {{/if}}
+        <li>Email : {{model.contactperson.mail}}</li>
+        <li>Téléphone principal : {{model.contactperson.phonemain}}</li>
+        <li>Téléphone secondaire : {{model.contactperson.phonesec}}</li>
+    </ul>
+
+    <h3>Coordonnées de facturation</h3>
+    <ul>
+        {{#if model.iscompany}}
+        {{else}}
+        <li>Civilité : {{model.billinginfo.civility}}</li>
+        <li>Nom : {{model.billinginfo.lastname}}</li>
+        <li>Prénom : {{model.billinginfo.firstname}}</li>
+        {{/if}}
+        <li>Rue : {{model.billinginfo.street}}</li>
+        <li>N° : {{model.billinginfo.number}}</li>
+        <li>Bte : {{model.billinginfo.box}}</li>
+        <li>Code Postal : {{model.billinginfo.zip}}</li>
+        <li>Localité : {{model.billinginfo.town}}</li>
+        <li>Pays : {{model.billinginfo.country}}</li>
+        <li>Email : {{model.billinginfo.mail}}</li>
+        <li>Téléphone principal : {{model.billinginfo.phonemain}}</li>
+        <li>Fax : {{model.billinginfo.fax}}</li>
+        <li>Téléphone secondaire : {{model.billinginfo.phonesec}}</li>
+    </ul>
+    
+    <h3>Coordonnées de livraison</h3>
+    {{#if isSameInfos}}
+        <p>
+            Identique aux coordonnées de facturation
+        </p>
+    {{else}}
+    <ul>
+        {{#if model.iscompany}}
+        {{else}}
+        <li>Civilité : {{model.deliveryinfo.civility}}</li>
+        <li>Nom : {{model.deliveryinfo.lastname}}</li>
+        <li>Prénom : {{model.deliveryinfo.firstname}}</li>
+        {{/if}}
+        <li>Société <span class="discreet">(si livraison dans une société)</span> : {{model.deliveryinfo.company}}</li>
+        <li>Rue : {{model.deliveryinfo.street}}</li>
+        <li>N° : {{model.deliveryinfo.number}}</li>
+        <li>Bte : {{model.deliveryinfo.box}}</li>
+        <li>Code Postal : {{model.deliveryinfo.zip}}</li>
+        <li>Localité : {{model.deliveryinfo.town}}</li>
+        <li>Pays : {{model.deliveryinfo.country}}</li>
+    </ul>
+    {{/if}}
+    <h3>Mémo</h3>
+    <p>
+        {{model.memo}}
+    </p>
+    <div class="actions">
+        <button {{action 'goBack'}}>Retour</button>
+        {{#link-to 'clients.edit' model.id tagName="button"}}Editer{{/link-to}}
+    </div>
+</section>

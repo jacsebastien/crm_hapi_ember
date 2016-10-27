@@ -1,0 +1,193 @@
+<section class="view-content">
+    <h2>Inscrire un nouveau client</h2>
+    <form {{action 'saveClient' client on="submit"}} class="form-account">
+        <fieldset>
+            <legend>Type de client</legend>
+            <label>Choix du type
+            {{#x-select value=client.iscompany}}
+                {{#x-option value=true}}Société{{/x-option}}
+                {{#x-option value=false}}Particulier{{/x-option}}
+            {{/x-select}}
+            </label>
+        </fieldset>
+        
+        <fieldset>
+            <legend>
+                {{#if client.iscompany}}Société
+                {{else}}Particulier{{/if}}
+            </legend>
+            {{#if error_name}}
+                <span class="form-error">{{error_name}}</span>
+            {{/if}}
+            <label>
+                {{#if client.iscompany}}Dénomination sociale
+                {{else}}Nom de référence{{/if}} *
+                {{input type="text" value=client.name required="required" classBinding="error_name:input-error"}}
+            </label>
+        </fieldset>
+
+        {{#if client.iscompany}}
+        <fieldset>
+            <legend>TVA</legend>
+            <label class="vat">N° de TVA *<br>
+                {{#x-select value=client.vat.prefix}}
+                    {{#each params.vatprefix as |vatprefix|}}
+                        {{#x-option value=vatprefix}}{{vatprefix}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}<!--
+                -->{{input type="text" value=client.vat.num required="required"}}
+            </label>
+            <label>N° SIREN
+                {{input type="text" value=client.vat.siren}}
+            </label>
+            <label>N° RCS
+                {{input type="text" value=client.vat.rcs}}
+            </label>
+        </fieldset>
+        {{/if}}
+        <fieldset>
+            <legend>Personne de contact</legend>
+            <label>Civilité
+                {{#x-select value=client.contactperson.civility}}
+                    {{#x-option value="Monsieur"}}Monsieur{{/x-option}}
+                    {{#x-option value="Madame"}}Madame{{/x-option}}
+                {{/x-select}}
+            </label>
+            <label>Nom *
+                {{input type="text" value=client.contactperson.lastname required="required"}}
+            </label>
+            <label>Prénom *
+                {{input type="text" value=client.contactperson.firstname required="required"}}
+            </label>
+            {{#if client.iscompany}}
+            <label>Fonction *
+                {{input type="text" value=client.contactperson.post required="required"}}
+            </label>
+            {{/if}}
+            <label>Email *
+                {{input type="email" value=client.contactperson.mail required="required"}}
+            </label>
+            <label>Téléphone principal *
+                {{input type="tel" value=client.contactperson.phonemain required="required"}}
+            </label>
+            <label>Téléphone secondaire
+                {{input type="tel" value=client.contactperson.phonesec}}
+            </label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Coordonnées de facturation</legend>
+            {{#if client.iscompany}}
+            {{else}}
+            <label>Civilité
+                {{#x-select value=client.billinginfo.civility}}
+                    {{#x-option value="Monsieur"}}Monsieur{{/x-option}}
+                    {{#x-option value="Madame"}}Madame{{/x-option}}
+                {{/x-select}}
+            </label>
+            <label>Nom *
+                {{input type="text" value=client.billinginfo.lastname required="required"}}
+            </label>
+            <label>Prénom *
+                {{input type="text" value=client.billinginfo.firstname required="required"}}
+            </label>
+            {{/if}}
+            <label>Rue *
+                {{input type="text" value=client.billinginfo.street required="required"}}
+            </label>
+            <label>N° *
+                {{input type="number" value=client.billinginfo.number required="required"}}
+            </label>
+            <label>Bte
+                {{input type="text" value=client.billinginfo.box}}
+            </label>
+            <label>Code Postal *
+                {{input type="text" value=client.billinginfo.zip required="required"}}
+            </label>
+            <label>Localité *
+                {{input type="text" value=client.billinginfo.town required="required"}}
+            </label>
+            <label>Pays
+                {{#x-select value=client.billinginfo.country}}
+                    {{#each params.countries as |country|}}
+                        {{#x-option value=country}}{{country}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}
+            </label>
+            <label>Email *
+                {{input type="email" value=client.billinginfo.mail required="required"}}
+            </label>
+            <label>Téléphone principal *
+                {{input type="tel" value=client.billinginfo.phonemain required="required"}}
+            </label>
+            <label>Fax
+                {{input type="tel" value=client.billinginfo.fax}}
+            </label>
+            <label>Téléphone secondaire
+                {{input type="tel" value=client.billinginfo.phonesec}}
+            </label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Coordonnées de livraison</legend>
+            <label>Identiques aux coordonnées de facturation
+                {{#x-select value=isSameInfos action='setDeliveryInfo'}}
+                    {{#x-option value=true}}Oui{{/x-option}}
+                    {{#x-option value=false}}Non{{/x-option}}
+                {{/x-select}}
+            </label>
+            {{#if isSameInfos}}
+            {{else}}
+                {{#if client.iscompany}}
+                {{else}}
+                <label>Civilité
+                    {{#x-select value=client.deliveryinfo.civility}}
+                        {{#x-option value="Monsieur"}}Monsieur{{/x-option}}
+                        {{#x-option value="Madame"}}Madame{{/x-option}}
+                    {{/x-select}}
+                </label>
+                <label>Nom *
+                    {{input type="text" value=client.deliveryinfo.lastname required="required"}}
+                </label>
+                <label>Prénom *
+                    {{input type="text" value=client.deliveryinfo.firstname required="required"}}
+                </label>
+                {{/if}}
+                <label>Société (si livraison dans une société)
+                    {{input type="text" value=client.deliveryinfo.company}}
+                </label>
+                <label>Rue *
+                    {{input type="text" value=client.deliveryinfo.street required="required"}}
+                </label>
+                <label>N° *
+                    {{input type="number" value=client.deliveryinfo.number required="required"}}
+                </label>
+                <label>Bte
+                    {{input type="text" value=client.deliveryinfo.box}}
+                </label>
+                <label>Code Postal *
+                    {{input type="text" value=client.deliveryinfo.zip required="required"}}
+                </label>
+                <label>Localité *
+                    {{input type="text" value=client.deliveryinfo.town required="required"}}
+                </label>
+                <label>Pays
+                    {{#x-select value=client.deliveryinfo.country}}
+                        {{#each params.countries as |country|}}
+                            {{#x-option value=country}}{{country}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
+                </label>
+            {{/if}}
+        </fieldset>
+
+        <fieldset>
+            <legend>Mémo</legend>
+            <label>Note relative au client
+                {{textarea value=client.memo cols="100" rows="6"}}
+            </label>
+        </fieldset>
+
+        {{input type="submit" value="Valider"}}
+    </form>
+</section>

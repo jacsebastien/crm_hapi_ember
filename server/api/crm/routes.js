@@ -1,14 +1,16 @@
 "use strict";
 
-let server = require(`${process.cwd()}/server`);
-let logger = require(`${process.cwd()}/utils/logger`);
+let server  = require(`${process.cwd()}/server`);
+let logger  = require(`${process.cwd()}/utils/logger`);
 
-let clientsCtrls = require('./controllers/clientsControllers');
-let companiesCtrls = require('./controllers/companiesControllers');
-let billsCtrls = require('./controllers/billsControllers');
-let paramsCtrls = require('./controllers/paramsControllers');
+let clientsCtrls    = require('./controllers/clientsControllers');
+let companiesCtrls  = require('./controllers/companiesControllers');
+let billsCtrls      = require('./controllers/billsControllers');
+let paramsCtrls     = require('./controllers/paramsControllers');
+let tokensCtrls     = require('./controllers/tokensControllers');
+let pdfCtrls        = require('./controllers/pdfControllers');
 
-module.exports = [
+exports.endpoints = [
     // CLIENTS
         {   // Get all clients or a list in function of the research
             method: 'GET',
@@ -92,9 +94,22 @@ module.exports = [
             method: 'DELETE',
             path: '/api/params/{id}',
             handler: paramsCtrls.get
-        }
+        },
+    // TOKENS
+        {
+            method: 'POST',
+            path: '/api/token',
+            handler: tokensCtrls.post
+        },{
+            method: 'POST',
+            path: '/api/token/verify',
+            handler: tokensCtrls.postVerify
+        },
+    
     // MISC
-        // Login
-        // Upload images
-        // Export PDF
+        {
+            method: 'POST',
+            path: '/api/pdf',
+            handler: pdfCtrls.createPdf
+        }
 ];

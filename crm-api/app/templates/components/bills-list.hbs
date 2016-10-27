@@ -1,0 +1,46 @@
+<tr>
+    <th>Type</th>
+    <th>Numéro</th>
+    <th>Client</th>
+    <th>Date</th>
+    <th>Montant</th>
+    <th>Actions</th>
+</tr>
+{{#each sortedReviews as |bill|}}
+<tr>
+    <td>
+        {{#if bill.iscredit}}
+            <span class="credit-label">Crédit</span>
+        {{else}}
+            <span class="bill-label">Facture</span>
+        {{/if}}
+    </td>
+    <td>{{bill.number}}</td>
+    <td>{{bill.client.name}}</td>
+    <td>{{moment-format bill.date 'DD/MM/YYYY'}}</td>
+    <td>
+        {{#if bill.iscredit}}
+            <span class="credit-amount">- {{format-float bill.details.credit}}</span>
+        {{else}}
+            <span class="bill-amount">+ {{format-float bill.details.total}}</span>
+        {{/if}}
+    </td>
+    <td>
+        {{#link-to 'bills.details' bill.id tagName="button"}}Détails{{/link-to}}
+        {{#if bill.iseditable}}
+            <button {{action 'removeBill' bill}}>Supprimer</button>
+            {{#if bill.iscredit}}
+                {{#link-to 'bills.credit' bill.id tagName="button"}}Editer{{/link-to}}
+            {{else}}
+                {{#link-to 'bills.edit' bill.id tagName="button"}}Editer{{/link-to}}
+            {{/if}}
+        {{else}}
+            {{#if bill.iscredited}}
+            {{else}}
+                {{#link-to 'bills.credit' bill.id tagName="button"}}Créditer{{/link-to}}
+            {{/if}}
+            <a href="{{bill.link}}" target="_blank">PDF</a>
+        {{/if}}
+    </td>
+</tr>
+{{/each}}

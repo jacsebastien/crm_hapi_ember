@@ -1,63 +1,79 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
+/* RESET
+    /* http://meyerweb.com/eric/tools/css/reset/ 
+    v2.0 | 20110126
+    License: none (public domain)
+    */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed, 
+    figure, figcaption, footer, header, hgroup, 
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: top;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure, 
+    footer, header, hgroup, menu, nav, section {
+        display: block;
+    }
+    body {
+        line-height: 1;
+    }
+    ol, ul {
+        list-style: none;
+    }
+    blockquote, q {
+        quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+        content: '';
+        content: none;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
 
 /* =========================================================*/
 /* Custom CSS */
 
-$mainColor : #333;
-$diffMain: #EEE;
-$middleColor: #999;
+$main_color : #333;
+$middle_color: #999;
+$light_color: #CCC;
+$diff_main: #EEE;
+$green: #377;
+$red: #d9534f;
 $xl: 20px;
 $l: 18px;
 
+$header_size: 50px;
+
+html {
+    height: 100%;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    height: 100%;
+}
+
+body > .ember-view {
+    height: 100%;
 }
 
 h1 {
@@ -73,25 +89,65 @@ h2 {
 }
 
 .wrapper {
-    display: flex;
-    display: -webkit-flex;
+    position: relative;
     width: 1024px;
     margin: 0 auto;
+    height: 100%;
 }
 
 .main-header {
-    height: 30px;
-    border-bottom: 1px solid $mainColor;
-    line-height: 30px;
-    padding: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: $light_color;
+    // border-bottom: 1px solid $main_color;
+    line-height: $header_size;
+
     & a {
         font-weight: bold;
         text-decoration: none;
-        color: $mainColor;
+        color: $main_color;
 
         &:hover {
-            color: $mainColor;
+            color: $main_color;
         }
+    }
+    & .header-title {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 200px;
+        text-align: center;
+        border-right: 1px solid $diff_main;
+    }
+
+    & .header-links {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 824px;
+        text-align: right;
+        padding-right: 20px;
+    }
+    & .logout {
+        cursor: pointer;
+        font-weight: bold;
+        &:hover{
+            color: $middle_color;
+        }
+    }
+}
+
+.not-found {
+    margin: 0 auto;
+    text-align: center;
+    font-weight: bold;
+}
+
+.login{
+    width: 300px;
+    margin: 50px auto;
+    padding: 30px;
+    & input {
+        margin-top: 10px;
     }
 }
 
@@ -100,33 +156,46 @@ nav {
         display: block;
         padding: 10px;
         text-decoration: none;
-        color: $mainColor;
-
-        &:hover {
-            background-color: $diffMain;
-        }
-    }
-    & .active, .active:hover {
-        background-color: $mainColor;
-        color: $diffMain;
     }
 }
 
+.container {
+    display: flex;
+    align-items: stretch;
+    min-height: 100%;
+}
+
 .main-nav {
+    margin-top: $header_size;
     box-sizing: border-box;
-    border-right: 1px solid $mainColor;
-    // width: 200px;
-    flex-grow: 1;
+    width: 200px;
+    background-color: $main_color;
+    
     & a {
+        line-height: 20px;
         text-transform: uppercase;
+        border-bottom: 1px solid $middle_color;
+        color: $light_color;
+
+        &:hover {
+            background-color: $diff_main;
+            color: $main_color;
+        }
+    }
+
+    & .active, .active:hover {
+        background-color: $diff_main;
+        color: $main_color;
+        text-align: center;
     }
 }
 
 .view {
+    margin-top: $header_size;
     box-sizing: border-box;
     padding: 20px;
-    // flex-grow: 5; 
-    flex-basis: 820px;
+    width: 824px;
+    // overflow: auto;
 }
 
 .view-nav {
@@ -137,18 +206,28 @@ nav {
     }
 
     & a {
+        font-size: 14px;
         border: 1px solid #AAA;
+        color: $main_color;
+
+        &:hover {
+            background-color: $diff_main;
+        }
+    }
+    & .active, .active:hover {
+        background-color: $main_color;
+        color: $diff_main;
     }
 }
 
 .view-content {
     & table {
         width: 100%;
-        border: 1px solid $mainColor;
+        border: 1px solid $main_color;
         & th {
             line-height: 35px;
-            background-color: $mainColor;
-            color: $diffMain;
+            background-color: $main_color;
+            color: $diff_main;
         }
         & td {
             padding: 5px;
@@ -156,10 +235,39 @@ nav {
             line-height: 30px;
         }
     }
+
+    button, a {
+        padding: 5px;
+        border: 0;
+        background-color: $main_color;
+        color: $diff_main;
+        font-size: 14px;
+        cursor: pointer;
+        vertical-align: top;
+    }
+
+    & a {
+        display: inline-block;
+        
+        font-size: 14px;
+        line-height: 17px;
+        color: $diff_main;
+        text-decoration: none;
+    }
+
+    & .credit-label, .credit-amount {
+        color: $red;
+    }
+
+    & .bill-label, .bill-amount {
+        color: $green;
+    }
 }
 
-.error {
-    color: orangered;
+.form-error, .error {
+    display: block;
+    color: $red;
+    padding: 5px;
 }
 
 .success {
@@ -167,11 +275,15 @@ nav {
     padding: 10px;
 }
 
+.discreet {
+    font-size: 0.8em;
+}
+
 form {
     text-align: center;
 
     & fieldset {
-        border: 1px solid $mainColor;
+        border: 1px solid $main_color;
         padding: 20px;
         margin-bottom: 20px;
         text-align: left;
@@ -183,27 +295,52 @@ form {
     input, select {
         width: 100%;
         line-height: 18px;
+        padding: 3px 10px;
         margin: 5px 0;
-        border: 1px solid $middleColor;
+        border: 1px solid $middle_color;
         background-color: #FFF;
+        box-sizing: border-box;
 
         &[type="submit"]{
-            width: 200px;
+            // reset the default width for submit buttons
+            width: auto;
+            
             font-size: 16px;
             line-height: 30px;
 
-            background-color: $mainColor;
+            background-color: $main_color;
             border: 0px;
-            color: $diffMain;
+            color: $diff_main;
         }
         &:disabled {
-            background-color: $diffMain;
+            background-color: $diff_main;
         }
+    }
+
+    & a {
+        display: inline-block;
+        padding: 8px;
+        background-color: $main_color;
+        color: $diff_main;
+        text-decoration: none;
+        &:hover {
+            background-color: $middle_color;
+        }
+    }
+    .input-error {
+        border: 1px solid $red;
     }
 
     select {
         height: 25px;
         border-radius: 0px;
+    }
+
+    & textarea{
+        resize: none;
+        width: 100%;
+        height: 150px;
+        box-sizing: border-box;
     }
 
     & .articles>div {
@@ -213,24 +350,22 @@ form {
         align-content: center;
         margin-bottom: 20px;
 
-        & input, select {
-            flex-basis: 35px;
+        & input, select, label {
+            flex-basis: 60px;
         }
 
         & button {
             flex-basis: 50px;
-            // font-size: 16px;
-            // line-height: 16px;
 
-            background-color: $mainColor;
+            background-color: $main_color;
             border: 0px;
-            color: $diffMain;
+            color: $diff_main;
         }
         & .article-price{
-            flex-basis: 50px;
+            flex-basis: 70px;
         }
         & .article-name, .article-pricetype {
-            flex-basis: 110px;
+            flex-basis: 90px;
         }
 
         & .article-amount {
@@ -239,20 +374,24 @@ form {
             padding-right: 5px;
         }
 
+        & .article-vat {
+            flex-basis: 35px;
+        }
+
         & .article-description {
             flex-basis: 180px;
         }
     }
 
     & .articles-list {
-        border-bottom: 1px solid $mainColor;
+        border-bottom: 1px solid $main_color;
         padding-bottom: 10px;
     }
 
     & .tots {
         // margin: 50px 50px 0 0;
         width: 350px;
-        margin-right: 95px;
+        margin-right: 60px;
         float: right;
         &>div {
             display: flex;
@@ -261,7 +400,7 @@ form {
         }
 
         & input {
-            width: 150px;
+            width: 110px;
             margin-left: 0;
             text-align: right;
             padding-right: 5px;
@@ -271,14 +410,15 @@ form {
             margin-left: 10px;
         }
     }
-    & .tots-refund {
-        & input, select {
-            width: 73px;
-        }
+
+    & .devise {
+        display: inline-block;
+        width: 35px;
+        text-align: center;
     }
 
     & .tots-utotal {
-        border-top: 1px solid $mainColor;
+        border-top: 1px solid $main_color;
         margin-top: 10px;
     }
 
@@ -286,7 +426,7 @@ form {
         text-transform: uppercase;
         font-weight: bold;
         line-height: 30px;
-        border-top: 3px solid $mainColor;
+        border-top: 3px solid $main_color;
         margin-top: 10px;
     }
 
@@ -294,17 +434,52 @@ form {
         & li:last-child{
             flex-basis: 100%;
         }
-
-        & textarea{
-            resize: none;
-            width: 100%;
-            height: 150px;
-        }
     }
 }
 
-.bill-details {
-    & ul {
+.form-account {
+    & label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    & .vat {
+        & select{
+            width: 50px;
+        }
+        & input {
+            width: 660px;
+            margin-left: 17px;
+        }
+    }
+    & button {
+        line-height: 30px;
+        padding: 3px 10px;
+    }
+}
+
+.addClient {
+    text-align: center;
+    & button {
+        padding: 10px;
+        margin: 0 0 20px 20px;
+    }
+
+    & fieldset {
+        text-align: center;
+    }
+
+    & select {
+        width: 400px;
+        margin: 0 20px;
+    }
+
+    & form {
+        margin-bottom: 40px;
+    }
+}
+
+.vew-details, .view-credit, .view-account {
+    & ul, p {
         margin-bottom: 20px;
         padding-left: 20px;
     }
@@ -312,26 +487,82 @@ form {
         font-weight: bold;
         margin: 10px 0;
     }
+    & .tots td{
+        border: 1px solid $main_color;
+        text-align: right;
+        padding-right: 10px;
+    }
+    & .actions {
+        text-align: center;
+    }
+    & button, a {
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    a {
+        // display: inline-block;
+        text-decoration: none;
+        // border: 0;
+        // background-color: $main_color;
+        color: $diff_main;
+        // font-size: 16px;
+        // line-height: 18px;
+    }
+}
+
+.vew-details, .view-credit {
     & table {
-        // margin-bottom: 
         & td:last-child{
             text-align: right;
             padding-right: 10px;
         }
     }
-    & .tots td{
-        border: 1px solid $mainColor;
-        text-align: right;
+}
+
+.view-credit {
+    & form {
+        margin-top: 20px;
+        & div {
+            display: inline-block;
+            width: 350px;
+
+            &:nth-child(2) {
+                margin-right: 27px;
+            }
+
+            &:last-child{
+                display: block;
+                width: 100%;
+            }
+        }
     }
-    & .actions {
-        text-align: center;
+    & input {
+        padding: 3px 10px;
     }
-    & button {
-        margin: 20px auto;
-        padding: 10px;
-        border: 0;
-        background-color: $mainColor;
-        color: $diffMain;
-        font-size: 16px;
+}
+
+.view-account{
+    & h2 {
+        text-align: left;
+        font-weight: bold;
     }
+    & table {
+        margin-bottom: 20px;
+
+        & button {
+            margin: 0;
+            padding: 5px 10px;
+        }
+        & .add-row{
+            // border-top: 1px solid $main_color;
+            background-color: $diff_main;
+        }
+    }
+    & .change-pwd {
+        line-height: 37px;
+        & a{
+            margin: 0 10px;
+        }
+    } 
 }

@@ -1,0 +1,78 @@
+<section class="view-content view-account">
+    <form {{action 'saveAccount' company on="submit"}} {{action 'checkChange' on="change"}} class="form-account">
+        <fieldset>
+            <legend>Société</legend>
+
+            <label>Dénomination sociale *{{input type="text" value=company.name required="required"}}</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Informations de connexion</legend>
+            <label>Login *{{input type="email" value=company.login.email required="required"}}</label>
+            <label class="change-pwd">Mot de passe {{#link-to 'account.password'}}Changer{{/link-to}}</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>TVA</legend>
+
+            <label class="vat">N° de TVA *<br>
+                {{#x-select value=company.vat.prefix}}
+                    {{#each params.vatprefix as |vatprefix|}}
+                        {{#x-option value=vatprefix}}{{vatprefix}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}<!--
+                -->{{input type="text" value=company.vat.num required="required"}}
+            </label>
+            <label>N° SIREN {{input type="text" value=company.vat.siren}}</label>
+            <label>N° RCS {{input type="text" value=company.vat.rcs}}</label>
+        </fieldset>
+
+        <fieldset>
+        <legend>Contact</legend>
+            <label>Rue *{{input type="text" value=company.contact.street required="required"}}</label>
+            <label>Numéro *{{input type="number" value=company.contact.number required="required"}}</label>
+            <label>Boite {{input type="text" value=company.contact.box}}</label>
+            <label>Code Postal *{{input type="text" value=company.contact.zip required="required"}}</label>
+            <label>Ville *{{input type="text" value=company.contact.town required="required"}}</label>
+            <label>Pays
+                {{#x-select value=company.contact.country}}
+                    {{#each params.countries as |country|}}
+                        {{#x-option value=country}}{{country}}{{/x-option}}
+                    {{/each}}
+                {{/x-select}}
+            </label>
+            <label>Mail *{{input type="email" value=company.contact.mail required="required"}}</label>
+            <label>Téléphone principal *{{input type="tel" value=company.contact.phonemain required="required"}}</label>
+            <label>Téléphone secondaire {{input type="tel" value=company.contact.phonesec}}</label>
+            <label>Fax {{input type="tel" value=company.contact.fax}}</label>
+            <label>Site web {{input type="url" value=company.contact.web}}</label>
+        </fieldset>
+
+        
+        <fieldset>
+        <legend>Personne de contact</legend>
+            <label>Civilité
+                {{#x-select value=company.contactperson.civility}}
+                    {{#x-option value="Monsieur"}}Monsieur{{/x-option}}
+                    {{#x-option value="Madame"}}Madame{{/x-option}}
+                {{/x-select}}
+            </label>
+            <label>Nom *{{input type="text" value=company.contactperson.lastname required="required"}}</label>
+            <label>Prénom *{{input type="text" value=company.contactperson.firstname required="required"}}</label>
+            <label>Fonction *{{input type="text" value=company.contactperson.post required="required"}}</label>
+            <label>Email *{{input type="email" value=company.contactperson.mail required="required"}}</label>
+            <label>Téléphone principal *{{input type="tel" value=company.contactperson.phonemain required="required"}}</label>
+            <label>Téléphone secondaire {{input type="tel" value=company.contactperson.phonesec}}</label>
+        </fieldset>
+
+        
+        <fieldset>
+        <legend>Termes et conditions</legend>
+            <label>Ecrivez vos termes ici
+                {{textarea value=company.terms cols="100" rows="6"}}
+            </label>
+        </fieldset>
+
+        {{input type="submit" value="Enregistrer"}}
+    </form>
+</section>

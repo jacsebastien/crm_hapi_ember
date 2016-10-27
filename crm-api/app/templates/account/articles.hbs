@@ -1,0 +1,58 @@
+<section class="view-content view-account">
+    <form {{action 'saveAccount' company on="submit"}} {{action 'checkChange' on="change"}}>
+        <h2>Articles</h2>
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Prix HTVA ({{devise}})</th>
+                <th>TVA</th>
+                <th>Actions</th>
+            </tr>
+            {{#each company.articles as |article|}}
+            <tr>
+                <td>{{input type="text" value=article.name}}</td>
+                <td>{{input type="text" value=article.description}}</td>
+                <td>
+                    {{#x-select value=article.pricetype}}
+                        {{#each params.types as |pricetype|}}
+                            {{#x-option value=pricetype}}{{pricetype}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
+                </td>
+                <td>{{input type="number" step="any" value=article.price}}</td>
+                <td>
+                    {{#x-select value=article.vat}}
+                        {{#each params.vatrate as |vatrate|}}
+                            {{#x-option value=vatrate}}{{vatrate}}%{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
+                </td>
+                <td><button {{action 'deleteArticle' article}}>-</button></td>
+            </tr>
+            {{/each}}
+            <tr class="add-row">
+                <td>{{input type="text" value=newArticle.name classBinding="isInvalid:input-error"}}</td>
+                <td>{{input type="text" value=newArticle.description}}</td>
+                <td>
+                    {{#x-select value=newArticle.pricetype}}
+                        {{#each params.types as |pricetype|}}
+                            {{#x-option value=pricetype}}{{pricetype}}{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
+                </td>
+                <td>{{input type="number" step="any" value=newArticle.price}}</td>
+                <td>
+                    {{#x-select value=newArticle.vat}}
+                        {{#each params.vatrate as |vatrate|}}
+                            {{#x-option value=vatrate}}{{vatrate}}%{{/x-option}}
+                        {{/each}}
+                    {{/x-select}}
+                </td>
+                <td><button {{action 'addArticle' newArticle}}>+</button></td>
+            </tr>
+        </table>
+        {{input type="submit" value="Enregistrer"}}
+    </form>
+</section>

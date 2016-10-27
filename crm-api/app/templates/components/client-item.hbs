@@ -1,0 +1,12 @@
+<td>{{client.name}}</td>
+<td>
+    {{#if client.iscompany}}
+        Société
+    {{else}}
+        Particulier
+    {{/if}}
+</td>
+<td>{{moment-format client.createdat 'DD/MM/YYYY'}}</td>
+<td>
+    {{yield}}
+</td>

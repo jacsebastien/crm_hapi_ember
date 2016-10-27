@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+        }
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 16px;
+            margin: 0;
+            padding: 10px 0;
+        }
+
+        h2 {
+            font-size: 12px;
+            margin: 0;
+            padding: 10px 0;
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #333;
+        }
+        th {
+            line-height: 20px;
+            background-color: #333;
+            color: #FFF;
+        }
+        td {
+            text-align: center;
+            line-height: 30px;
+        }
+        .tots td {
+            border: 1px solid #333;
+            text-align: right;
+            padding-right: 10px;
+        }
+        p {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    {{#if iscredit}}
+        <h1>Crédit</h1>
+    {{else}}
+        <h1>Facture</h1>
+    {{/if}}
+    <h2>Vos références</h2>
+    <ul>
+
+        <li>N° de {{#if iscredit}}crédit{{else}}facture{{/if}} : {{number}}</li>
+        <li>Date de {{#if iscredit}}crédit{{else}}facture{{/if}} : {{date}}</li>
+    </ul>
+
+    <h2>Références Client</h2>
+    <ul>
+        <li>Client : {{client.name}}</li>
+    </ul>
+
+    <h2>Objet</h2>
+    <ul>
+        <li>Nom du projet : {{project.name}}</li>
+        <li>Date de début : {{project.begin}}</li>
+        <li>Date de fin : {{project.end}}</li>
+    </ul>
+
+    <h2>Détails</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Qté</th>
+            <th>Type</th>
+            <th>Prix</th>
+            <th>TVA</th>
+            <th>Montant HTVA</th>
+        </tr>
+        {{#each details.articles as |article|}}
+            <tr>
+                <td>{{article.name}}</td>
+                <td>{{article.description}}</td>
+                <td>{{article.quantity}}</td>
+                <td>{{article.pricetype}}</td>
+                <td>{{article.price}} {{devise}}</td>
+                <td>{{article.vat}}%</td>
+                {{!--use custom helper to format number with 2 decimals--}}
+                <td>{{article.amount}} {{devise}}</td>
+            </tr>
+        {{/each}}
+        <tr class="tots">
+            <td colspan="6">
+                Total hors taxes
+            </td>
+            <td>
+                {{details.totxvat}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+                Ristourne
+            </td>
+            <td>
+                {{details.refund}} {{details.refundtype}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+                Sous-Total hors taxes
+            </td>
+            <td>
+                {{details.utotxvat}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+                TVA
+            </td>
+            <td>
+                {{details.vat}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+               Total TTC
+            </td>
+            <td>
+                {{details.utotal}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+               Acompte
+            </td>
+            <td> 
+                {{details.advance}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+               A payer
+            </td>
+            <td>
+                {{details.total}} {{devise}}
+            </td>
+        </tr>
+        {{#if iscredit}}
+            <tr class="tots">
+                <td colspan="6">
+                Crédit
+                </td>
+                <td>
+                    - {{details.credit}} {{devise}}
+                </td>
+            </tr>
+            <tr class="tots">
+                <td colspan="6">
+                Total après crédit
+                </td>
+                <td>
+                    {{details.totcredit}} {{devise}}
+                </td>
+            </tr>
+        {{/if}}
+    </table>
+
+    {{#if iscredit}}
+    {{else}}
+        <h2>Echéance</h2>
+        <p>
+            {{deadline}}
+        </p>
+
+        <h2>Mode de paiement principal</h2>
+        <ul>
+            <li>Nom : {{primaccount.name}}</li>
+            {{#if primaccount.iban}}<li>IBAN : {{primaccount.iban}}</li>{{/if}}
+            {{#if primaccount.bic}}<li>BIC : {{primaccount.bic}}</li>{{/if}}
+            {{#if primaccount.mail}}<li>Mail : {{primaccount.mail}}</li>{{/if}}
+        </ul>
+
+        <h2>Mode de paiement secondaire</h2>
+        {{#if secaccount}}
+        <ul>
+            <li>Nom : {{secaccount.name}}</li>
+            {{#if secaccount.iban}}<li>IBAN : {{secaccount.iban}}</li>{{/if}}
+            {{#if secaccount.bic}}<li>BIC : {{secaccount.bic}}</li>{{/if}}
+            {{#if secaccount.mail}}<li>Mail : {{secaccount.mail}}</li>{{/if}}
+        </ul>
+        {{else}}
+        <p>
+            Aucun
+        </p>
+        {{/if}}
+    {{/if}}
+</body>
+</html>

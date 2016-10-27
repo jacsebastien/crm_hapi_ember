@@ -1,0 +1,20 @@
+<td>
+    {{#if bill.iscredit}}
+        <span class="credit-label">Crédit</span>
+    {{else}}
+        <span class="bill-label">Facture</span>
+    {{/if}}
+</td>
+<td>{{bill.number}}</td>
+<td>{{bill.client.name}}</td>
+<td>{{moment-format bill.createdat 'DD/MM/YYYY'}}</td>
+<td>
+    {{#if bill.iscredit}}
+        <span class="credit-amount">- {{format-float bill.details.credit}}</span>
+    {{else}}
+        <span class="bill-amount">+ {{format-float bill.details.total}}</span>
+    {{/if}}
+</td>
+<td>
+    {{yield}}
+</td>

@@ -1,0 +1,49 @@
+<section class="view-content view-account">
+    <form {{action 'saveAccount' company on="submit"}} {{action 'checkChange' on="change"}}>
+        <h2>Comptes en banque :</h2>
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>IBAN</th>
+                <th>BIC</th>
+                <th>Actions</th>
+            </tr>
+            {{#each company.paymentinfo.bank as |bank|}}
+            <tr>
+                <td>{{input type="text" value=bank.name}}</td>
+                <td>{{input type="text" value=bank.iban}}</td>
+                <td>{{input type="text" value=bank.bic}}</td>
+                <td><button {{action 'deleteBank' bank}}>-</button></td>
+            </tr>
+            {{/each}}
+            <tr class="add-row">
+                <td>{{input type="text" value=newBank.name classBinding="isBankInvalid:input-error"}}</td>
+                <td>{{input type="text" value=newBank.iban classBinding="isBankInvalid:input-error"}}</td>
+                <td>{{input type="text" value=newBank.bic}}</td>
+                <td><button {{action 'addBank' newBank}}>+</button></td>
+            </tr>
+        </table>
+        
+        <h2>Comptes Paypal :</h2>
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            {{#each company.paymentinfo.paypal as |paypal|}}
+            <tr>
+                <td>{{input type="text" value=paypal.name}}</td>
+                <td>{{input type="text" value=paypal.mail}}</td>
+                <td><button {{action 'deletePaypal' paypal}}>-</button></td>
+            </tr>
+            {{/each}}
+            <tr class="add-row">
+                <td>{{input type="text" value=newPaypal.name classBinding="isPaypalInvalid:input-error"}}</td>
+                <td>{{input type="text" value=newPaypal.mail classBinding="isPaypalInvalid:input-error"}}</td>
+                <td><button {{action 'addPaypal' newPaypal}}>+</button></td>
+            </tr>
+        </table>
+        {{input type="submit" value="Enregistrer"}}
+    </form>
+</section>

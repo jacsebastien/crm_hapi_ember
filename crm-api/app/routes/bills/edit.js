@@ -2,47 +2,58 @@ import Ember from 'ember';
 import moment from 'moment';
 
 export default Ember.Route.extend({
-    // if we create new articles to add to the DB
-    newArticles: [],
+    session: Ember.inject.service('session'),
 
     model(params) {
+        let that = this;
         return Ember.RSVP.hash({
-            companies: this.store.findAll('company'),
+            company : this.store.findRecord('company', that.get('session.accountId')),
             bill: this.store.findRecord('bill', params.bill_id),
             clients: this.store.findAll('client'),
             params: this.store.findAll('param')
         });
     },
-    setupController: function(controller, model) {
+    afterModel(model, transition){
+        let clientId = model.bill.get('client._id');
+        model.bill.set('client', clientId);
+    },
+    setupController (controller, model) {
         this._super(controller, model);
-        let that = this;
+        // let that = this;
 
         this.controller.set('title', 'Editer une facture');
         this.controller.set('buttonLabel', 'Enregistrer');
+        this.controller.set('devise', "€");
+        this.controller.set('theRoute', this);
+
         // get the first company of the db
-        this.controller.set('company', model.companies.objectAt(0));
+        this.controller.set('company', model.company);
         this.controller.set('clients', model.clients);
         // we have only one object in the params collection so get the first object of the array
         this.controller.set('params', model.params.objectAt(0));
 
-        // this.controller.set('bill', model.bill);
         this.controller.set('bill', model.bill);
+        // let clientId = this.controller.get('bill.client._id');
+        // this.controller.set('bill.client', clientId);
 
-        let tempDate = moment(this.controller.get('bill.date')).format('YYYY-MM-DD');
-        this.controller.set('bill.date', tempDate);
+        // get the bill increment
+        let numberSplit = this.controller.get('bill.number').split('-');
+        this.controller.set('billIncrement', numberSplit[1]);      
 
-        tempDate = moment(this.controller.get('bill.project.begin')).format('YYYY-MM-DD');
-        this.controller.set('bill.project.begin', tempDate);
-
-        tempDate = moment(this.controller.get('bill.project.end')).format('YYYY-MM-DD');
-        this.controller.set('bill.project.end', tempDate);
-
-        console.log(this.controller.get('bill.details'));
+        // console.log(this.controller.get('bill.details'));
         this.controller.set('listArticles', this.controller.get('bill.details.articles'));
 
-        this.controller.set('bill.client', this.controller.get('bill.client._id'));
+        let listAccounts = [];
+        this.controller.get('company.paymentinfo.bank').map(function(bank){
+            listAccounts.push(bank);
+        });
+        this.controller.get('company.paymentinfo.paypal').map(function(paypal){
+            listAccounts.push(paypal);
+        });
+        
+        this.controller.set('listAccounts', listAccounts);
 
-        this.controller.set('newArticles', this.newArticles);
+        this.controller.set('newArticles', []);
         // value to show/hide the "create new article" part of the form
         this.controller.set('isShowForm', false);
         
@@ -64,6 +75,10 @@ export default Ember.Route.extend({
         let totalxvat = parseFloat(this.get('controller').get('bill.details.totxvat'));
         let refund = parseFloat(this.get('controller').get('bill.details.refund'));
         let utotxvat = parseFloat(this.get('controller').get('bill.details.utotxvat'));
+        // console.log(refund);
+        if(isNaN(refund)){
+            refund = 0;
+        }
         if(this.get('controller').get('bill.details.refundtype') === "%"){
             refund = (totalxvat / 100) * refund;
         }
@@ -79,12 +94,14 @@ export default Ember.Route.extend({
         // CALCULATE TOTAL
         let advance = parseFloat(this.get('controller').get('bill.details.advance'));
         let total = parseFloat(this.get('controller').get('bill.details.total'));
+        if(isNaN(advance)){
+            advance = 0;
+        }
         total = utotal - advance;
         this.get('controller').set('bill.details.total', total.toFixed(2));
     },
     newArticle(article, isNew){
         // ADD TO THE TEMP ARRAY
-        // create a new objetc to avoid pushing instance of the first inside the tempList and editing it when we edit a new article with the sames properties
         let tempArticle = {
             name: article.name,
             description: article.description,
@@ -95,13 +112,9 @@ export default Ember.Route.extend({
             vat: article.vat,
             isNew: isNew
         };
-        // console.log(article);
         this.controller.get('listArticles').pushObject(tempArticle);
-        // console.log(this.controller.get('listArticles'));
         if(isNew){
-            // add to the temp list of articles prepared to be added to the DB
             this.controller.get('newArticles').pushObject(tempArticle);
-            // console.log(this.controller.get('newArticles'));
         }
 
         // CALCULATE
@@ -113,7 +126,7 @@ export default Ember.Route.extend({
         // vat
         let vat = parseFloat(this.controller.get('bill.details.vat'));
         let amountvat = (parseFloat(article.amount) / 100) * parseFloat(article.vat);
-        // add the vat of the new article to the total
+
         vat += parseFloat(amountvat);
         this.controller.set('bill.details.vat', vat.toFixed(2));
 
@@ -123,21 +136,22 @@ export default Ember.Route.extend({
         let quantity = parseFloat(article.quantity);
         let price = parseFloat(article.price);
         let amount = quantity * price;
-        // toFixed(2) to have 2 decimal
         return amount.toFixed(2);
     },
     actions : {
-        changeNumber(){
-            let billnumber = moment(this.controller.get('bill.date')).format('YYYYMMDD');
-            let billIncrement = this.controller.get('company.bills').length;
-            billIncrement ++;
-            if(billIncrement < 10){
-                billIncrement = "00"+billIncrement;
-            } else if(billIncrement < 100){
-                billIncrement = "0"+billIncrement;
-            }
-            billnumber += "-"+billIncrement;
+        changeNumber(value){
+            // console.log(value);
+            this.controller.set('bill.date', value);
+            let billnumber = moment(value).format('YYYYMMDD');
+            // let billIncrement = this.controller.get('company.bills').length;
+            billnumber += "-"+this.controller.get('billIncrement');
             this.controller.set('bill.number', billnumber);
+        },
+        pickBeginDate(value){
+            this.controller.set('bill.project.begin', value);
+        },
+        pickEndDate(value){
+            this.controller.set('bill.project.end', value);
         },
         setArticle() {
             this.controller.set('newArticle.quantity', 1);
@@ -154,7 +168,6 @@ export default Ember.Route.extend({
         showForm(){
             if(this.controller.get('isShowForm') === false){
                 this.controller.set('isShowForm', true);
-
             } else {
                 this.controller.set('isShowForm', false);
             }
@@ -237,12 +250,15 @@ export default Ember.Route.extend({
         },
         saveBill(bill) {
             let that = this;
-            console.log(bill);
-            // get the list of article to add to the bill
-            bill.details.articles =  this.controller.get('listArticles');
-            bill.company =  this.controller.get('company.id');
-            // console.log(bill);
 
+            let refund = parseFloat(bill.details.refund);
+            if(isNaN(refund)){
+                bill.details.refund = 0;
+            }
+            // get the list of article to add to the bill
+            bill.set('details.articles', that.controller.get('listArticles'));
+            console.log(bill);
+            bill.updatedat = Date.now();
             // get the list of articles to add to the companie's articles list 
             this.controller.get('newArticles').map(function(article){
                 that.controller.get('company.articles').pushObject(article);
@@ -250,17 +266,16 @@ export default Ember.Route.extend({
             
             // add new articles to articles list of company
             this.controller.get('company').save()
-            .then((response)=>{
-                console.log(response);
+            .then(()=>{
+                // console.log(response);
                 // add the new bill in bills collection
                 bill.save()
-                .then((response) =>{
-                    console.log(response);                    
-                    this.transitionTo('bills', {queryParams: {responseMessage: 'Nouvelle facture crée !'}});
+                .then(() =>{
+                    // console.log(response);                    
+                    this.transitionTo('bills', {queryParams: {responseMessage: 'Facture éditée !'}});
                 })
                 .catch((response)=>{
-                    bill.rollbackAttributes();
-                    console.log(response);
+                    // console.log(response);
                     if(response.errors[0].status === 400){
                         that.controller.set('error', true);
                         window.scrollTo(0,0);
@@ -268,16 +283,28 @@ export default Ember.Route.extend({
                 });
             })
             .catch((response)=>{
-                console.log(response);
+                // console.log(response);
                 if(response.errors[0].status === 400){
                     that.controller.set('error', true);
                     window.scrollTo(0,0);
                 }
             });
         },
-        // willTransition() {
-        //     // clean the to delete informations when we leave the page without saving informations
-        //     this.controller.get('bill').rollbackAttributes();
-        // }
+        willTransition(transition) {
+            let model = this.controller.get('model.bill');
+            // if the user don't save the form before leaving the page (thx to the Ember Model's hasDirtyAttributes)
+            if(model.get('hasDirtyAttributes')) {
+                let confirmation = confirm("Vos changements n'ont pas été sauvegardés, voulez-vous changer de page?");
+
+                // if the user say yes
+                if(confirmation) {
+                    // switch page
+                    model.rollbackAttributes();
+                } else {
+                    // use the parameter passed to the function to stop the transition
+                    transition.abort();
+                }
+            }
+        }
     }
 });

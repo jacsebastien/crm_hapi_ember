@@ -1,0 +1,6 @@
+{{#link-to 'index' class="header-title"}}CRM API{{/link-to}}{{!--
+--}}<div class="header-links">
+    {{#if session.isAuthenticated}}
+        <span class="logout" {{action 'invalidateSession'}}>Logout</span>
+    {{/if}}
+</div>

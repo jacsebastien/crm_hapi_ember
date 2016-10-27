@@ -1,0 +1,7 @@
+<section class="view-content">
+    <h2>Clients déjà inscrits</h2>
+    {{#if errorExist}}
+        <span class="form-error">{{errorExist}}</span>
+    {{/if}}
+    {{clients-list clients=clients addClient='addClient'}}
+</section>

@@ -1,0 +1,10 @@
+{{#if session.isAuthenticated}}
+    {{!--<nav class="main-nav">--}}
+        <ul>
+            <li>{{#link-to 'index'}}Home{{/link-to}}</li>
+            <li>{{#link-to 'clients'}}Clients{{/link-to}}</li>
+            <li>{{#link-to 'bills'}}Factures{{/link-to}}</li>
+            <li>{{#link-to 'account'}}Mon Compte{{/link-to}}</li>
+        </ul>
+    {{!--</nav>--}}
+{{/if}}

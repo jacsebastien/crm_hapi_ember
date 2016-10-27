@@ -1,0 +1,27 @@
+<tr>
+    <th>Nom</th>
+    <th>Type</th>
+    <th>Inscrit le</th>
+    <th>Actions</th>
+</tr>
+{{#each sortedReviews as |client|}}
+<tr>
+    <td>{{client.name}}</td>
+    <td>
+        {{#if client.iscompany}}
+            Société
+        {{else}}
+            Particulier
+        {{/if}}
+    </td>
+    <td>{{moment-format client.createdat 'DD/MM/YYYY'}}</td>
+    <td>
+        {{#link-to 'clients.details' client._id tagName="button"}}Détails{{/link-to}}
+        {{#if addClient}}
+            <button {{action 'addClient' client.id}}>Ajouter</button>
+        {{else}}
+            {{#link-to 'clients.edit' client._id tagName="button"}}Editer{{/link-to}}
+        {{/if}}
+    </td>
+</tr>
+{{/each}}

@@ -1,0 +1,126 @@
+<section class="view-content view-credit">
+    <h2>{{title}}</h2>
+    <h3>Référence facture</h3>
+    <ul>
+        <li>N° de facture : {{credit.number}}</li>
+        <li>Date de facture : {{moment-format credit.date 'DD/MM/YYYY'}}</li>
+    </ul>
+
+    <h3>Références Client</h3>
+    <ul>
+        <li>Client : {{credit.client.name}}</li>
+    </ul>
+
+    <h3>Objet</h3>
+    <ul>
+        <li>Nom du projet : {{credit.project.name}}</li>
+        <li>Date de début : {{moment-format credit.project.begin 'DD/MM/YYYY'}}</li>
+        <li>Date de fin : {{moment-format credit.project.end 'DD/MM/YYYY'}}</li>
+    </ul>
+
+    <h3>Détails</h3>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Qté</th>
+            <th>Type</th>
+            <th>Prix</th>
+            <th>TVA</th>
+            <th>Montant HTVA</th>
+        </tr>
+        {{#each credit.details.articles as |article|}}
+            <tr>
+                <td>{{article.name}}</td>
+                <td>{{article.description}}</td>
+                <td>{{article.quantity}}</td>
+                <td>{{article.pricetype}}</td>
+                <td>{{article.price}} {{devise}}</td>
+                <td>{{article.vat}}%</td>
+                {{!--use custom helper to format number with 2 decimals--}}
+                <td>{{format-float article.amount}} {{devise}}</td>
+            </tr>
+        {{/each}}
+        <tr class="tots">
+            <td colspan="6">
+                Total hors taxes
+            </td>
+            <td>
+                {{format-float credit.details.totxvat}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+                Ristourne
+            </td>
+            <td>
+                {{format-float credit.details.refund}} {{credit.details.refundtype}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+                Sous-Total hors taxes
+            </td>
+            <td>
+                {{format-float credit.details.utotxvat}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+                TVA
+            </td>
+            <td>
+                {{format-float credit.details.vat}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+            Total TTC
+            </td>
+            <td>
+                {{format-float credit.details.utotal}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+            Acompte
+            </td>
+            <td> 
+                {{format-float credit.details.advance}} {{devise}}
+            </td>
+        </tr>
+        <tr class="tots">
+            <td colspan="6">
+            A payer
+            </td>
+            <td>
+                {{format-float credit.details.total}} {{devise}}
+            </td>
+        </tr>
+    </table>
+    <form {{action 'saveCredit' credit on="submit"}}>
+        <fieldset class="infos">
+            <legend>Crédit</legend>
+            <div>
+                <label>Date de Crédit
+                    {{input type="date" value=credit.creditdate placeholder="jj-mm-aaaa"}}
+                </label>
+            </div><!-- 
+         --><div>
+                <label>A créditer
+                    {{input type="number" step="any" value=credit.details.credit key-up='calcCredit'}}
+                </label>
+                
+                <label>Total avec crédit
+                    {{input type="number" value=credit.details.totcredit disabled=true}}
+                </label>
+            </div>
+            <div>
+                <label for="note">Notes</label><br>
+                {{textarea id="note" value=credit.note cols="60" rows="6"}}
+            </div>
+        </fieldset>
+
+        {{input type="submit" value=buttonLabel}}
+    </form>
+</section>

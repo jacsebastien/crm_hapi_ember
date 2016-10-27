@@ -1,0 +1,98 @@
+<section class="view-content view-account">
+    {{#if responseMessage}}
+        <div class="success">{{responseMessage}}</div>
+    {{/if}}
+    <h2>Société</h2>
+    <p>
+        {{company.name}}
+    </p>
+
+    <h2>TVA</h2>
+    <ul>
+        <li>N° de TVA : {{company.vat.prefix}} {{company.vat.num}}</li>
+        <li>N° SIREN : {{company.vat.siren}}</li>
+        <li>N° RCS : {{company.vat.rcs}}</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <ul>
+        <li>Rue : {{company.contact.street}}</li>
+        <li>Numéro : {{company.contact.number}}</li>
+        <li>Boite : {{company.contact.box}}</li>
+        <li>Code Postal : {{company.contact.zip}}</li>
+        <li>Ville : {{company.contact.town}}</li>
+        <li>Pays : {{company.contact.country}}</li>
+        <li>Mail : {{company.contact.mail}}</li>
+        <li>Téléphone principal : {{company.contact.phonemain}}</li>
+        <li>Téléphone secondaire : {{company.contact.phonesec}}</li>
+        <li>Fax : {{company.contact.fax}}</li>
+        <li>Site web : {{company.contact.web}}</li>
+    </ul>
+
+    <h2>Personne de contact</h2>
+    <ul>
+        <li>Civilité : {{company.contactperson.civility}}</li>
+        <li>Nom : {{company.contactperson.lastname}}</li>
+        <li>Prénom : {{company.contactperson.firstname}}</li>
+        <li>Fonction : {{company.contactperson.post}}</li>
+        <li>Email : {{company.contactperson.mail}}</li>
+        <li>Téléphone principal : {{company.contactperson.phonemain}}</li>
+        <li>Téléphone secondaire : {{company.contactperson.phonesec}}</li>
+    </ul>
+    
+    <h2>Informations de paiement</h2>
+    <h3>Comptes en banque :</h3>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>IBAN</th>
+            <th>BIC</th>
+        </tr>
+        {{#each company.paymentinfo.bank as |bank|}}
+        <tr>
+            <td>{{bank.name}}</td>
+            <td>{{bank.iban}}</td>
+            <td>{{bank.bic}}</td>
+        </tr>
+        {{/each}}
+    </table>
+    
+    <h3>Comptes Paypal :</h3>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+        </tr>
+        {{#each company.paymentinfo.paypal as |paypal|}}
+        <tr>
+            <td>{{paypal.name}}</td>
+            <td>{{paypal.mail}}</td>
+        </tr>
+        {{/each}}
+    </table>
+
+    <h2>Articles</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Prix HTVA</th>
+            <th>TVA</th>
+        </tr>
+        {{#each company.articles as |article|}}
+        <tr>
+            <td>{{article.name}}</td>
+            <td>{{article.description}}</td>
+            <td>{{article.pricetype}}</td>
+            <td>{{article.price}} {{devise}}</td>
+            <td>{{article.vat}}%</td>
+        </tr>
+        {{/each}}
+    </table>
+
+    <h2>Termes et conditions</h2>
+    <div>
+        {{company.terms}}
+    </div>
+</section>

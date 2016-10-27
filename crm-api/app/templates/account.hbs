@@ -1,3 +1,14 @@
 <section class="view">
     <h1>Mon Compte</h1>
+    <nav class="view-nav">
+        <ul>
+            <li>{{#link-to 'account.index'}}Vue d'ensemble{{/link-to}}</li>
+            <li>{{#link-to 'account.edit'}}Editer mes infos{{/link-to}}</li>
+            <li>{{#link-to 'account.billing'}}Gérer les comptes{{/link-to}}</li>
+            <li>{{#link-to 'account.articles'}}Gérer les articles{{/link-to}}</li>
+            <li>{{#link-to 'account.password'}}Changer de mot de passe{{/link-to}}</li>
+        </ul>
+    </nav>
+
+    {{outlet}}
 </section>

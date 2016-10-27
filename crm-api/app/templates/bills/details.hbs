@@ -1,10 +1,13 @@
-<section class="view-content bill-details">
-    <h2>Détails de la facture :</h2>
-
+<section class="view-content vew-details">
+    <h2>{{title}}</h2>
+    {{#if error}}
+        <span class="error">{{error}}</span>
+    {{/if}}
     <h3>Vos références</h3>
     <ul>
-        <li>N° de facture : {{model.number}}</li>
-        <li>Date de facture : {{moment-format model.date 'DD/MM/YYYY'}}</li>
+
+        <li>N° de {{#if model.iscredit}}crédit{{else}}facture{{/if}} : {{model.number}}</li>
+        <li>Date de {{#if model.iscredit}}crédit{{else}}facture{{/if}} : {{moment-format model.date 'DD/MM/YYYY'}}</li>
     </ul>
 
     <h3>Références Client</h3>
@@ -19,7 +22,7 @@
         <li>Date de fin : {{moment-format model.project.end 'DD/MM/YYYY'}}</li>
     </ul>
 
-    <h3>Détail</h3>
+    <h3>Détails</h3>
     <table>
         <tr>
             <th>Nom</th>
@@ -44,7 +47,7 @@
         {{/each}}
         <tr class="tots">
             <td colspan="6">
-                Total hors taxes :
+                Total hors taxes
             </td>
             <td>
                 {{format-float model.details.totxvat}} {{devise}}
@@ -52,7 +55,7 @@
         </tr>
         <tr class="tots">
             <td colspan="6">
-                Ristourne :
+                Ristourne
             </td>
             <td>
                 {{format-float model.details.refund}} {{model.details.refundtype}}
@@ -60,7 +63,7 @@
         </tr>
         <tr class="tots">
             <td colspan="6">
-                Sous-Total hors taxes :
+                Sous-Total hors taxes
             </td>
             <td>
                 {{format-float model.details.utotxvat}} {{devise}}
@@ -68,7 +71,7 @@
         </tr>
         <tr class="tots">
             <td colspan="6">
-                TVA :
+                TVA
             </td>
             <td>
                 {{format-float model.details.vat}} {{devise}}
@@ -76,7 +79,7 @@
         </tr>
         <tr class="tots">
             <td colspan="6">
-               Total TTC :
+               Total TTC
             </td>
             <td>
                 {{format-float model.details.utotal}} {{devise}}
@@ -84,7 +87,7 @@
         </tr>
         <tr class="tots">
             <td colspan="6">
-               Acompte :
+               Acompte
             </td>
             <td> 
                 {{format-float model.details.advance}} {{devise}}
@@ -92,24 +95,82 @@
         </tr>
         <tr class="tots">
             <td colspan="6">
-               A payer :
+               A payer
             </td>
             <td>
                 {{format-float model.details.total}} {{devise}}
             </td>
         </tr>
+        {{#if model.iscredit}}
+            <tr class="tots">
+                <td colspan="6">
+                Crédit
+                </td>
+                <td>
+                    - {{format-float model.details.credit}} {{devise}}
+                </td>
+            </tr>
+            <tr class="tots">
+                <td colspan="6">
+                Total après crédit
+                </td>
+                <td>
+                    {{format-float model.details.totcredit}} {{devise}}
+                </td>
+            </tr>
+        {{/if}}
     </table>
 
-    <h3>Informations et règles de paiement</h3>
-    <ul>
-        <li>Echéance : {{model.deadline}}</li>
-        <li>Mode de paiement principal : {{model.primaccount}}</li>
-        <li>Mode de paiement secondaire : {{model.secaccount}}</li>
-        <li>Notes : <br>
-            {{model.note}}
-        </li>
-    </ul>
+    {{#if model.iscredit}}
+    {{else}}
+        <h3>Echéance</h3>
+        <p>
+            {{model.deadline}}
+        </p>
+
+        <h3>Mode de paiement principal</h3>
+        <ul>
+            <li>Nom : {{model.primaccount.name}}</li>
+            {{#if model.primaccount.iban}}<li>IBAN : {{model.primaccount.iban}}</li>{{/if}}
+            {{#if model.primaccount.bic}}<li>BIC : {{model.primaccount.bic}}</li>{{/if}}
+            {{#if model.primaccount.mail}}<li>Mail : {{model.primaccount.mail}}</li>{{/if}}
+        </ul>
+
+        <h3>Mode de paiement secondaire</h3>
+        {{#if model.secaccount}}
+        <ul>
+            <li>Nom : {{model.secaccount.name}}</li>
+            {{#if model.secaccount.iban}}<li>IBAN : {{model.secaccount.iban}}</li>{{/if}}
+            {{#if model.secaccount.bic}}<li>BIC : {{model.secaccount.bic}}</li>{{/if}}
+            {{#if model.secaccount.mail}}<li>Mail : {{model.secaccount.mail}}</li>{{/if}}
+        </ul>
+        {{else}}
+        <p>
+            Aucun
+        </p>
+        {{/if}}
+    {{/if}}
+
+    <h3>Notes</h3>
+    <p>
+        {{model.note}}
+    </p>
+
     <div class="actions">
-        <button>Imprimer</button>
+        {{#if model.iseditable}}
+            <button {{action 'removeBill' model}}>Supprimer</button>
+            {{#if model.iscredit}}
+                {{#link-to 'bills.credit' model.id tagName="button"}}Editer{{/link-to}}
+            {{else}}
+                {{#link-to 'bills.edit' model.id tagName="button"}}Editer{{/link-to}}
+            {{/if}}
+            <button {{action "printBill" model}}>Imprimer</button>
+        {{else}}
+            {{#if model.iscredited}}
+            {{else}}
+                {{#link-to 'bills.credit' model.id tagName="button"}}Créditer{{/link-to}}
+            {{/if}}
+            <a href="{{model.link}}" target="_blank">Voir le PDF</a>
+        {{/if}}
     </div>
 </section>

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export function formatFloat([value, ...rest]) {
+export function formatFloat([value]) {
 
   return value.toFixed(2);
 }
